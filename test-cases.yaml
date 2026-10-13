@@ -1,0 +1,6 @@
+designer-run:
+  name: subject-historic-current-comparison
+  description: The values used with ▶ Run in the designer.
+  params:
+    workflow_details:
+      name: j
