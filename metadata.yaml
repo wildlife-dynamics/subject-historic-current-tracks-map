@@ -3,5 +3,7 @@ author:
 - name: Tevin Temu
   organization: Wildlife Dynamics
   email: tevin@wildlifedynamics.com
-description: ''
+description: >-
+  Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a comparison period just before it.
+  Current tracks are drawn in the subject's EarthRanger colour, previous tracks in grey, with one map per subject.
 citation: []

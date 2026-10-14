@@ -34,26 +34,41 @@
     <h3>Set Workflow Details</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Workflow Name <em>(required)</em></td><td></td><td>—</td></tr></tbody>
-    </table>
-    <h3>Set Time Range</h3>
-    <table>
-      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Since <em>(required)</em></td><td>The start time</td><td>—</td></tr><tr><td>Until <em>(required)</em></td><td>The end time</td><td>—</td></tr><tr><td>Timezone</td><td></td><td>—</td></tr></tbody>
+      <tbody><tr><td>Workflow Name <em>(required)</em></td><td></td><td>—</td></tr><tr><td>Workflow Description</td><td></td><td>—</td></tr></tbody>
     </table>
     <h3>Connect to EarthRanger</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
       <tbody><tr><td>Data source <em>(required)</em></td><td>Select one of your configured data sources.</td><td>—</td></tr></tbody>
     </table>
+    <h3>Set Time Range</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
+      <tbody><tr><td>Since <em>(required)</em></td><td>The start of the current period.</td><td>—</td></tr><tr><td>Until <em>(required)</em></td><td>The end of the current period.</td><td>—</td></tr><tr><td>Timezone</td><td></td><td>—</td></tr></tbody>
+    </table>
+    <h3>Trajectory Segment Filter</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
+      <tbody><tr><td>Min Length Meters</td><td>Minimum segment length in meters. Advanced.</td><td><code>0.001</code></td></tr><tr><td>Max Length Meters</td><td>Maximum segment length in meters. Advanced.</td><td><code>5000</code></td></tr><tr><td>Min Time Secs</td><td>Minimum segment duration in seconds. Advanced.</td><td><code>1</code></td></tr><tr><td>Max Time Secs</td><td>Maximum segment duration in seconds. Advanced.</td><td><code>21600</code></td></tr><tr><td>Min Speed Kmhr</td><td>Minimum segment speed in km/h. Advanced.</td><td><code>0.01</code></td></tr><tr><td>Max Speed Kmhr</td><td>Maximum segment speed in km/h. Advanced.</td><td><code>9.0</code></td></tr></tbody>
+    </table>
     <h3>Subject Group</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Var <em>(required)</em></td><td></td><td>—</td></tr></tbody>
+      <tbody><tr><td>Subject Group Name <em>(required)</em></td><td>Enter the subject group name exactly as it appears in EarthRanger (case-sensitive).</td><td><code>Elephants</code></td></tr></tbody>
+    </table>
+    <h3>BaseMap URLs</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
+      <tbody><tr><td>Base maps</td><td>Tile layers to draw under the tracks. The first layer in the list is the bottommost.</td><td>Studio&#x27;s default layers</td></tr></tbody>
+    </table>
+    <h3>Previous Period</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
+      <tbody><tr><td>Offset <em>(required)</em></td><td>How to set the start of the comparison period. It always ends where the current period starts. <strong>Preset</strong>: <em>Same as current period</em>, <em>1 month back</em>, <em>3 months back</em>, <em>6 months back</em> or <em>1 year back</em>. <strong>Custom</strong>: any number of years, months, weeks, days, hours, minutes and seconds. <strong>Calendar</strong>: an exact start date.</td><td>Preset, <code>1 month back</code></td></tr></tbody>
     </table>
 
     <h2>4. Run it and find the results</h2>
-    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes.</p>
+    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes. The dashboard has one <strong>Movement Tracks</strong> map per subject: the current period in the subject's EarthRanger colour (blue if it has none), the previous period in grey.</p>
   </main>
 
   <footer class="site-footer">

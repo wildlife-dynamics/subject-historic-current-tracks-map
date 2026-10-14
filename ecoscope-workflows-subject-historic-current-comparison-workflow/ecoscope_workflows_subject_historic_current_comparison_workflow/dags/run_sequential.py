@@ -24,6 +24,7 @@ from ecoscope.platform.tasks.results import (
     create_map_widget_single_view as create_map_widget_single_view,
 )
 from ecoscope.platform.tasks.results import gather_dashboard as gather_dashboard
+from ecoscope.platform.tasks.results import merge_widget_views as merge_widget_views
 from ecoscope.platform.tasks.skip import (
     any_dependency_skipped as any_dependency_skipped,
 )
@@ -85,7 +86,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(description="", **(params.get("workflow_details") or {}))
+        .partial(**(params.get("workflow_details") or {}))
         .call()
     )
 
@@ -108,10 +109,10 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    segment_filter = (
-        task(trajectory_segment_filter)
+    er_connection = (
+        task(set_er_connection)
         .validate()
-        .set_task_instance_id("segment_filter")
+        .set_task_instance_id("er_connection")
         .handle_errors()
         .with_tracing()
         .skipif(
@@ -121,46 +122,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(
-            min_length_meters=0.001,
-            max_length_meters=5000,
-            min_time_secs=1,
-            max_time_secs=21600,
-            min_speed_kmhr=0.01,
-            max_speed_kmhr=9.0,
-            **(params.get("segment_filter") or {}),
-        )
-        .call()
-    )
-
-    base_maps_pydeck = (
-        task(set_base_maps_pydeck)
-        .validate()
-        .set_task_instance_id("base_maps_pydeck")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(
-            base_maps=[
-                {
-                    "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-                    "opacity": 1,
-                    "max_zoom": 20,
-                },
-                {
-                    "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                    "opacity": 0.5,
-                    "max_zoom": 20,
-                },
-            ],
-            **(params.get("base_maps_pydeck") or {}),
-        )
+        .partial(**(params.get("er_connection") or {}))
         .call()
     )
 
@@ -181,10 +143,10 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    er_connection = (
-        task(set_er_connection)
+    segment_filter = (
+        task(trajectory_segment_filter)
         .validate()
-        .set_task_instance_id("er_connection")
+        .set_task_instance_id("segment_filter")
         .handle_errors()
         .with_tracing()
         .skipif(
@@ -194,7 +156,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(**(params.get("er_connection") or {}))
+        .partial(**(params.get("segment_filter") or {}))
         .call()
     )
 
@@ -212,6 +174,23 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(**(params.get("subject_group_name") or {}))
+        .call()
+    )
+
+    base_maps_pydeck = (
+        task(set_base_maps_pydeck)
+        .validate()
+        .set_task_instance_id("base_maps_pydeck")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(**(params.get("base_maps_pydeck") or {}))
         .call()
     )
 
@@ -255,11 +234,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(
-            timerange=time_range,
-            offset={"preset": "1 month back"},
-            **(params.get("previous_time_range") or {}),
-        )
+        .partial(timerange=time_range, **(params.get("previous_time_range") or {}))
         .call()
     )
 
@@ -870,7 +845,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .partial(
             tile_layers=base_maps_pydeck,
             static=False,
-            title="",
+            title=None,
             legend_style={"placement": "bottom-right"},
             max_zoom=20,
             **(params.get("current_previous_map") or {}),
@@ -916,6 +891,23 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .map(argnames=["view", "data"], argvalues=persist_map)
     )
 
+    widget_views = (
+        task(merge_widget_views)
+        .validate()
+        .set_task_instance_id("widget_views")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(widgets=map_widget_single_view, **(params.get("widget_views") or {}))
+        .call()
+    )
+
     dashboard = (
         task(gather_dashboard)
         .validate()
@@ -930,7 +922,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
-            widgets=map_widget_single_view,
+            widgets=widget_views,
             groupers=groupers,
             time_range=time_range,
             details=workflow_details,

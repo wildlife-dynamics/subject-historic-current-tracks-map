@@ -32,10 +32,20 @@
 
     <div class="error-block">
       <p class="symptom">The run returns no data</p>
-      <p>Names typed into the settings (a subject group, an event type) must match the data source exactly, including capitals. Widen the time range if it's short.</p>
+      <p>The <strong>Subject Group Name</strong> must match EarthRanger exactly, including capitals; the default is <code>Elephants</code>. Both periods need observations, so widen the time range or pick a longer <strong>Previous Period</strong> offset if either is short.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">Current tracks look broken up, or have gaps the previous tracks don't</p>
+      <p>The current tracks use the <strong>Trajectory Segment Filter</strong> settings (by default at most 9 km/h, 5 km and 6 hours per segment); the previous tracks use much wider fixed limits. Raise the filter's limits on the form for faster or less frequently reporting subjects.</p>
     </div>
 
     <h2>Developing</h2>
+
+    <div class="error-block">
+      <p class="symptom">The Subject Group field is still labelled "Var"</p>
+      <p>The override key must name the step id inside the task group: <code>Subject Group.properties.subject_group_name.properties.var</code>. Check it against the <code>id</code> under <strong>Subject Group</strong> in <code>spec.yaml</code>, then recompile.</p>
+    </div>
 
     <div class="error-block">
       <p class="symptom">CI says the generated files differ from the committed ones</p>
