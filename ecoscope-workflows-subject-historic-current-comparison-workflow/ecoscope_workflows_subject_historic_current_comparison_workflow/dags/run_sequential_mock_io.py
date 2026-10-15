@@ -316,7 +316,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             client=er_connection,
             time_range=previous_time_range,
             subject_group_name=subject_group_name,
-            raise_on_empty=True,
+            raise_on_empty=False,
             include_details=False,
             include_subjectsource_details=False,
             filter="clean",
@@ -407,7 +407,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
             df=previous_relocations,
             filetype="geoparquet",
-            filename="previous_relocations",
+            filename="historic_relocations",
             **(params.get("persist_previous_relocations") or {}),
         )
         .call()
@@ -587,7 +587,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .partial(
             root_path=os.environ["ECOSCOPE_WORKFLOWS_RESULTS"],
             df=previous_relocs_to_trajs,
-            filename="previous_trajectories",
+            filename="historic_trajectories",
             filetype="geoparquet",
             **(params.get("persist_previous_trajectories") or {}),
         )
@@ -610,7 +610,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .partial(
             df=map_previous_trajs,
             column_name="duration_status",
-            default_value="Previous Tracks",
+            default_value="Historic Tracks",
             **(params.get("previous_duration_status") or {}),
         )
         .call()
@@ -624,8 +624,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .with_tracing()
         .skipif(
             conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
+                never,
             ],
             unpack_depth=1,
         )

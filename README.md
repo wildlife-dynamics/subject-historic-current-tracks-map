@@ -14,7 +14,7 @@ Maps each subject in an EarthRanger subject group with its tracks from the chose
 | **Subject Group** | The subject group to map. |
 | **BaseMap URLs** | Tile layers drawn under the tracks. |
 | **Current Subject Group Observations** | Get observations for a subject group from EarthRanger. |
-| **Previous Period** | Compute a comparison period ending at timerange.since (i.e. immediately preceding, and not overlapping with, the current period), with the start determined by one of three modes:   - Custom: manually specify years/months/weeks/days/hours/minutes/seconds   - Preset: pick a named offset (same period, 1/3/6 months, 1 year back)   - Calendar: pick an exact since date from a date picker |
+| **Comparison Period** | The earlier period whose tracks are drawn in grey under the current tracks. It ends where the current time range starts and, by default, is the same length. |
 | **Process Current Relocations** | Cleans the current period's fixes and drops known bad coordinates. |
 | **Previous Subject Group Observations** | Get observations for a subject group from EarthRanger. |
 | **Current Relocations to Trajectories** | Joins the current fixes into track segments, using the Trajectory Segment Filter settings. |
@@ -96,7 +96,7 @@ You'll be prompted to fill in the following parameters before running.
 
 | Field | Description | Default |
 |---|---|---|
-| Subject Group Name *(required)* | Enter the subject group name exactly as it appears in EarthRanger (case-sensitive). | `Elephants` |
+| Subject Group Name *(required)* | The EarthRanger subject group to map, picked from a drop-down of the subject groups on the data source chosen under **Connect to EarthRanger**. | — |
 
 ### BaseMap URLs
 
@@ -104,11 +104,11 @@ You'll be prompted to fill in the following parameters before running.
 |---|---|---|
 | Base maps | Tile layers to draw under the tracks. The first layer in the list is the bottommost. | Studio's default layers |
 
-### Previous Period
+### Comparison Period
 
 | Field | Description | Default |
 |---|---|---|
-| Offset *(required)* | How to set the start of the comparison period. It always ends where the current period starts. **Preset**: *Same as current period*, *1 month back*, *3 months back*, *6 months back* or *1 year back*. **Custom**: any number of years, months, weeks, days, hours, minutes and seconds. **Calendar**: an exact start date. | Preset, `1 month back` |
+| Comparison Period Length *(required)* | How far back the comparison period starts. It always ends where the current time range starts. **Preset**: *Same as current period*, *1 month back*, *3 months back*, *6 months back* or *1 year back*. **Custom**: any number of years, months, weeks, days, hours, minutes and seconds. **Calendar**: an exact start date. | Preset, `Same as current period` |
 
 ---
 
@@ -116,10 +116,15 @@ You'll be prompted to fill in the following parameters before running.
 
 The run form is set in `spec.yaml`:
 
-- `rjsf-overrides` relabels the **Subject Group** field from *Var* to *Subject Group Name*, defaults it to
-  `Elephants` and says the name must match EarthRanger exactly. Inside a task group the override key is
-  `<group title>.properties.<step id>`, so it is `Subject Group.properties.subject_group_name...`.
-- **Trajectory Segment Filter**, **BaseMap URLs** and **Previous Period** have no fixed values in the spec,
+- `rjsf-overrides` turns the **Subject Group** field (*Var*) into a *Subject Group Name* drop-down: the
+  `EarthRangerEnumResolver` transform fills it with the subject groups of the data source picked under
+  **Connect to EarthRanger** (`depends_on: properties.er_connection.properties.data_source.properties.name`).
+  Inside a task group the override key is `<group title>.properties.<step id>`, so it is
+  `Subject Group.properties.subject_group_name.properties.var`.
+- `rjsf-overrides` also titles and describes the **Comparison Period** step and defaults its length to the
+  *Same as current period* preset: `previous_time_range.properties.offset.default` picks the Preset option,
+  and `$defs: PresetPreviousPeriod.properties.preset.default` sets the preset inside it.
+- **Trajectory Segment Filter**, **BaseMap URLs** and **Comparison Period** have no fixed values in the spec,
   so they're on the form for each run.
 - The current tracks use the **Trajectory Segment Filter** settings, but the previous tracks use fixed limits
   in **Previous Relocations to Trajectories** (up to 100 km and 500 km/h per segment). Keep them in step if

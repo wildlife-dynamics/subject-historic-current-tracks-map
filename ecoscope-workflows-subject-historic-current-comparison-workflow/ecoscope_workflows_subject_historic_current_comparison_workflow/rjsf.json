@@ -129,8 +129,16 @@
             "var": {
               "title": "Subject Group Name",
               "type": "string",
-              "default": "Elephants",
-              "description": "Enter the subject group name exactly as it appears in EarthRanger (case-sensitive)."
+              "description": "The EarthRanger subject group to map, picked from the chosen data source's subject groups.",
+              "ecoscope:transform": [
+                {
+                  "transformer": "EarthRangerEnumResolver",
+                  "transformer_kws": {
+                    "type": "subject_group_name",
+                    "depends_on": "properties.er_connection.properties.data_source.properties.name"
+                  }
+                }
+              ]
             }
           },
           "required": [
@@ -348,7 +356,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "BaseMap URLs"
+      "title": "Configure basemap layers"
     },
     "previous_time_range": {
       "additionalProperties": false,
@@ -365,15 +373,19 @@
               "$ref": "#/$defs/CalendarPreviousPeriod"
             }
           ],
-          "title": "Offset",
-          "description": "How to compute the start of the comparison period."
+          "title": "Comparison Period Length",
+          "description": "How far back the comparison period starts: a preset (e.g. the same length as the current period), a custom offset, or a start date picked on the calendar.",
+          "default": {
+            "preset": "Same as current period"
+          }
         }
       },
       "required": [
         "offset"
       ],
       "type": "object",
-      "title": "Previous Period"
+      "title": "Comparison Period",
+      "description": "The earlier period whose tracks are drawn in grey under the current tracks. It always ends where the current time range starts."
     }
   },
   "$defs": {
@@ -477,7 +489,7 @@
     "PresetPreviousPeriod": {
       "properties": {
         "preset": {
-          "default": "1 month back",
+          "default": "Same as current period",
           "description": "Choose a predefined time offset.",
           "enum": [
             "Same as current period",

@@ -32,7 +32,12 @@
 
     <div class="error-block">
       <p class="symptom">The run returns no data</p>
-      <p>The <strong>Subject Group Name</strong> must match EarthRanger exactly, including capitals; the default is <code>Elephants</code>. Both periods need observations, so widen the time range or pick a longer <strong>Previous Period</strong> offset if either is short.</p>
+      <p>Check the <strong>Subject Group Name</strong> picked from the drop-down is the group you meant. Both periods need observations, so widen the time range or pick a longer <strong>Comparison Period Length</strong> if either is short.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">The Subject Group Name drop-down is empty</p>
+      <p>The list comes from the data source chosen under <strong>Connect to EarthRanger</strong>, so pick the data source first. If it stays empty, that connection can't be reached or its account can't see any subject groups.</p>
     </div>
 
     <div class="error-block">
@@ -43,8 +48,8 @@
     <h2>Developing</h2>
 
     <div class="error-block">
-      <p class="symptom">The Subject Group field is still labelled "Var"</p>
-      <p>The override key must name the step id inside the task group: <code>Subject Group.properties.subject_group_name.properties.var</code>. Check it against the <code>id</code> under <strong>Subject Group</strong> in <code>spec.yaml</code>, then recompile.</p>
+      <p class="symptom">The Subject Group field is still labelled "Var", or is free text instead of a drop-down</p>
+      <p>The override key must name the step id inside the task group: <code>Subject Group.properties.subject_group_name.properties.var</code>. Check it against the <code>id</code> under <strong>Subject Group</strong> in <code>spec.yaml</code>, and that its <code>depends_on</code> points at <code>properties.er_connection.properties.data_source.properties.name</code>, then recompile.</p>
     </div>
 
     <div class="error-block">

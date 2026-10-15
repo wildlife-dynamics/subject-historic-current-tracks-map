@@ -18,10 +18,26 @@ requirements:
 
 rjsf-overrides:
   properties:
-    # Subject Group
-    Subject Group.properties.subject_group_name.properties.var.title: Subject Group Name
-    Subject Group.properties.subject_group_name.properties.var.default: Elephants
-    Subject Group.properties.subject_group_name.properties.var.description: "Enter the subject group name exactly as it appears in EarthRanger (case-sensitive)."
+    # Subject Group: a drop-down of the chosen EarthRanger site's subject group names
+    Subject Group.properties.subject_group_name.properties.var:
+      title: Subject Group Name
+      type: string
+      description: The EarthRanger subject group to map, picked from the chosen data source's subject groups.
+      ecoscope:transform:
+      - transformer: EarthRangerEnumResolver
+        transformer_kws:
+          type: subject_group_name
+          depends_on: properties.er_connection.properties.data_source.properties.name
+
+    # Comparison period: defaults to a period as long as the current one, ending where it starts
+    previous_time_range.description: "The earlier period whose tracks are drawn in grey under the current tracks. It always ends where the current time range starts."
+    previous_time_range.properties.offset.title: Comparison Period Length
+    previous_time_range.properties.offset.description: "How far back the comparison period starts: a preset (e.g. the same length as the current period), a custom offset, or a start date picked on the calendar."
+    previous_time_range.properties.offset.default:
+      preset: Same as current period
+
+  $defs:
+    PresetPreviousPeriod.properties.preset.default: Same as current period
 
 task-instance-defaults:
   skipif:
@@ -63,7 +79,7 @@ workflow:
       id: subject_group_name
       task: set_string_var
 
-- name: BaseMap URLs
+- name: Configure basemap layers
   id: base_maps_pydeck
   task: set_base_maps_pydeck
 
@@ -80,7 +96,7 @@ workflow:
     filter: clean
     include_subject_additional: false
 
-- name: Previous Period
+- name: Comparison Period
   id: previous_time_range
   task: flexible_previous_period
   partial:
@@ -123,7 +139,7 @@ workflow:
     client: ${{ workflow.er_connection.return }}
     time_range: ${{ workflow.previous_time_range.return }}
     subject_group_name: ${{ workflow.subject_group_name.return }}
-    raise_on_empty: true
+    raise_on_empty: false
     include_details: false
     include_subjectsource_details: false
     filter: clean
@@ -173,7 +189,7 @@ workflow:
     root_path: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
     df: ${{ workflow.previous_relocations.return }}
     filetype: geoparquet
-    filename: previous_relocations
+    filename: historic_relocations
 
 - name: Persist Current Relocations
   id: persist_current_relocations
@@ -252,7 +268,7 @@ workflow:
   partial:
     root_path: ${{ env.ECOSCOPE_WORKFLOWS_RESULTS }}
     df: ${{ workflow.previous_relocs_to_trajs.return }}
-    filename: previous_trajectories
+    filename: historic_trajectories
     filetype: geoparquet
 
 - name: Previous Duration Status
@@ -261,11 +277,14 @@ workflow:
   partial:
     df: ${{ workflow.map_previous_trajs.return }}
     column_name: duration_status
-    default_value: Previous Tracks
+    default_value: Historic Tracks
 
 - name: Concatenate Current and Previous Dataframes
   id: dataframes
   task: concatenate_dataframes
+  skipif:
+    conditions:
+      - never
   partial:
     list_df:
     - ${{ workflow.previous_duration_status.return }}

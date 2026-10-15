@@ -339,7 +339,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "BaseMap URLs"
+      "title": "Configure basemap layers"
     },
     "previous_time_range": {
       "additionalProperties": false,
@@ -364,7 +364,7 @@
         "offset"
       ],
       "type": "object",
-      "title": "Previous Period"
+      "title": "Comparison Period"
     }
   },
   "$defs": {
