@@ -41,8 +41,18 @@
     </div>
 
     <div class="error-block">
-      <p class="symptom">Current tracks look broken up, or have gaps the previous tracks don't</p>
-      <p>The current tracks use the <strong>Trajectory Segment Filter</strong> settings (by default at most 9 km/h, 5 km and 6 hours per segment); the previous tracks use much wider fixed limits. Raise the filter's limits on the form for faster or less frequently reporting subjects.</p>
+      <p class="symptom">Tracks look broken up, or have gaps</p>
+      <p>Both periods use the <strong>Trajectory Segment Filter</strong> settings (by default at most 9 km/h, 5 km and 6 hours per segment), so segments longer, slower or faster than that are dropped. Raise the filter's limits on the form for faster or less frequently reporting subjects.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">Historic tracks cover the current tracks</p>p>
+      <p>Tick <strong>Current tracks on top</strong> under <strong>Track Order and Colors</strong>. It's on by default, and a run that leaves it out gets the same behaviour.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">A subject's current tracks are missing, or the run fails while colouring tracks</p>
+      <p>With <strong>Use subject colors for current tracks</strong> ticked, each subject needs a colour set in EarthRanger. Set one there, or untick the box to use the <strong>Current Tracks Color</strong> for every subject.</p>
     </div>
 
     <h2>Developing</h2>
@@ -50,6 +60,11 @@
     <div class="error-block">
       <p class="symptom">The Subject Group field is still labelled "Var", or is free text instead of a drop-down</p>
       <p>The override key must name the step id inside the task group: <code>Subject Group.properties.subject_group_name.properties.var</code>. Check it against the <code>id</code> under <strong>Subject Group</strong> in <code>spec.yaml</code>, and that its <code>depends_on</code> points at <code>properties.er_connection.properties.data_source.properties.name</code>, then recompile.</p>
+    </div>
+
+    <div class="error-block">
+      <p class="symptom">The track colours are plain text fields, or "Current tracks on top" is missing</p>
+      <p>The overrides must name the steps inside their task group: <code>Track Order and Colors.properties.status_color_columns.properties.&lt;field&gt;</code> and <code>Track Order and Colors.properties.sort_values_by_status.properties.ascending</code>. Check the group title and step ids in <code>spec.yaml</code> match, then recompile.</p>
     </div>
 
     <div class="error-block">

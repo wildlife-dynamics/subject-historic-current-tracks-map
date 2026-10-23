@@ -4,3 +4,9 @@ designer-run:
   params:
     workflow_details:
       name: j
+    status_color_columns:
+      previous_color_hex: '#a9a9a9'
+      use_hex_column_for_current: true
+      default_current_hex: '#6495ed'
+    sort_values_by_status:
+      ascending: true

@@ -157,12 +157,14 @@
             {
               "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
               "opacity": 1,
-              "max_zoom": 20
+              "max_zoom": 20,
+              "min_zoom": 0
             },
             {
               "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
               "opacity": 0.5,
-              "max_zoom": 20
+              "max_zoom": 20,
+              "min_zoom": 0
             }
           ],
           "items": {
@@ -183,6 +185,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -207,6 +210,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -231,6 +235,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -255,6 +260,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -262,30 +268,6 @@
                   }
                 },
                 "title": "Terrain",
-                "type": "object"
-              },
-              {
-                "description": "A tiled raster layer loaded on-demand from a URL template (e.g., base maps).",
-                "properties": {
-                  "url": {
-                    "default": "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}",
-                    "title": "Preset Layer URL",
-                    "type": "string",
-                    "const": "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}",
-                    "enum": [
-                      "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}"
-                    ]
-                  },
-                  "opacity": {
-                    "default": 1,
-                    "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
-                    "maximum": 1.0,
-                    "minimum": 0.0,
-                    "title": "Layer Opacity",
-                    "type": "number"
-                  }
-                },
-                "title": "LandDx",
                 "type": "object"
               },
               {
@@ -303,6 +285,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -325,6 +308,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Custom Layer Opacity",
@@ -356,7 +340,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "Configure basemap layers"
+      "title": "Base Maps"
     },
     "previous_time_range": {
       "additionalProperties": false,
@@ -385,7 +369,58 @@
       ],
       "type": "object",
       "title": "Comparison Period",
-      "description": "The earlier period whose tracks are drawn in grey under the current tracks. It always ends where the current time range starts."
+      "description": "The earlier period whose tracks are drawn as comparison tracks (grey and under the current tracks by default). It always ends where the current time range starts."
+    },
+    "Track Order and Colors": {
+      "type": "object",
+      "description": "The colours for historic and current tracks, and which draw on top where they overlap.",
+      "ecoscope:task_group": true,
+      "properties": {
+        "status_color_columns": {
+          "additionalProperties": false,
+          "properties": {
+            "previous_color_hex": {
+              "title": "Historic Tracks Color",
+              "type": "string",
+              "format": "color",
+              "default": "#a9a9a9",
+              "description": "Colour of the tracks from the historic period."
+            },
+            "use_hex_column_for_current": {
+              "title": "Use subject colors for current tracks",
+              "type": "boolean",
+              "default": true,
+              "description": "Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color below for every subject."
+            },
+            "default_current_hex": {
+              "title": "Current Tracks Color",
+              "type": "string",
+              "format": "color",
+              "default": "#6495ed",
+              "description": "Colour of the current tracks when \"Use subject colors for current tracks\" is unticked."
+            }
+          },
+          "required": [
+            "previous_color_hex"
+          ],
+          "type": "object",
+          "title": "Track Colors"
+        },
+        "sort_values_by_status": {
+          "additionalProperties": false,
+          "properties": {
+            "ascending": {
+              "title": "Current tracks on top",
+              "type": "boolean",
+              "default": true,
+              "description": "Draw current tracks over historic tracks where they overlap. Untick to draw historic tracks on top."
+            }
+          },
+          "required": [],
+          "type": "object",
+          "title": "Track Order"
+        }
+      }
     }
   },
   "$defs": {
@@ -530,6 +565,19 @@
         "max_speed_kmhr"
       ]
     },
+    "Track Order and Colors": {
+      "ui:order": [
+        "status_color_columns",
+        "sort_values_by_status"
+      ],
+      "status_color_columns": {
+        "ui:order": [
+          "previous_color_hex",
+          "use_hex_column_for_current",
+          "default_current_hex"
+        ]
+      }
+    },
     "ui:order": [
       "workflow_details",
       "er_connection",
@@ -537,7 +585,8 @@
       "segment_filter",
       "Subject Group",
       "base_maps_pydeck",
-      "previous_time_range"
+      "previous_time_range",
+      "Track Order and Colors"
     ]
   },
   "additionalProperties": false
