@@ -297,7 +297,7 @@ workflow:
   partial:
     df: ${{ workflow.map_previous_trajs.return }}
     column_name: duration_status
-    default_value: Comparison Tracks
+    default_value: Historic Tracks
 
 - name: Concatenate Current and Previous Dataframes
   id: dataframes
@@ -338,9 +338,9 @@ workflow:
 
 - title: Track Order and Colors
   type: task-group
-  description: The colours for comparison and current tracks, and which draw on top where they overlap.
+  description: The colours for historic and current tracks, and which draw on top where they overlap.
   tasks:
-  # Comparison tracks get one colour; current tracks use each subject's EarthRanger
+  # Historic tracks get one colour; current tracks use each subject's EarthRanger
   # hex_color unless the checkbox is unticked, then the picked colour.
   - name: Track Colors
     id: status_color_columns

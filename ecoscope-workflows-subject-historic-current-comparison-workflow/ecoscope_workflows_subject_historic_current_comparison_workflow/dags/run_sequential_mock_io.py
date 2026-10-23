@@ -599,7 +599,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .partial(
             df=map_previous_trajs,
             column_name="duration_status",
-            default_value="Comparison Tracks",
+            default_value="Historic Tracks",
             **(params.get("previous_duration_status") or {}),
         )
         .call()

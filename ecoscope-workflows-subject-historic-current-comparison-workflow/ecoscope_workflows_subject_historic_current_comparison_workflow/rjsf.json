@@ -373,18 +373,18 @@
     },
     "Track Order and Colors": {
       "type": "object",
-      "description": "The colours for comparison and current tracks, and which draw on top where they overlap.",
+      "description": "The colours for historic and current tracks, and which draw on top where they overlap.",
       "ecoscope:task_group": true,
       "properties": {
         "status_color_columns": {
           "additionalProperties": false,
           "properties": {
             "previous_color_hex": {
-              "title": "Comparison Tracks Color",
+              "title": "Historic Tracks Color",
               "type": "string",
               "format": "color",
               "default": "#a9a9a9",
-              "description": "Colour of the tracks from the comparison period."
+              "description": "Colour of the tracks from the historic period."
             },
             "use_hex_column_for_current": {
               "title": "Use subject colors for current tracks",
@@ -413,7 +413,7 @@
               "title": "Current tracks on top",
               "type": "boolean",
               "default": true,
-              "description": "Draw current tracks over comparison tracks where they overlap. Untick to draw comparison tracks on top."
+              "description": "Draw current tracks over historic tracks where they overlap. Untick to draw historic tracks on top."
             }
           },
           "required": [],
