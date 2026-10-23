@@ -15,13 +15,11 @@ from ecoscope.platform.tasks.config import set_workflow_details as set_workflow_
 from ecoscope.platform.tasks.filter import set_time_range as set_time_range
 from ecoscope.platform.tasks.groupby import set_groupers as set_groupers
 from ecoscope.platform.tasks.io import set_er_connection as set_er_connection
+from ecoscope.platform.tasks.results import set_base_maps as set_base_maps
 from ecoscope.platform.tasks.skip import (
     any_dependency_skipped as any_dependency_skipped,
 )
 from ecoscope.platform.tasks.skip import any_is_empty_df as any_is_empty_df
-from ecoscope_workflows_ext_custom.tasks.results import (
-    set_base_maps_pydeck as set_base_maps_pydeck,
-)
 from ecoscope_workflows_ext_ste.tasks.transformation import (
     trajectory_segment_filter as trajectory_segment_filter,
 )
@@ -56,6 +54,8 @@ from ecoscope.platform.tasks.preprocessing import (
 from ecoscope.platform.tasks.results import (
     create_map_widget_single_view as create_map_widget_single_view,
 )
+from ecoscope.platform.tasks.results import create_path_layer as create_path_layer
+from ecoscope.platform.tasks.results import draw_map as draw_map
 from ecoscope.platform.tasks.results import gather_dashboard as gather_dashboard
 from ecoscope.platform.tasks.results import merge_widget_views as merge_widget_views
 from ecoscope.platform.tasks.skip import never as never
@@ -64,10 +64,6 @@ from ecoscope.platform.tasks.transformation import (
 )
 from ecoscope.platform.tasks.transformation import map_columns as map_columns
 from ecoscope.platform.tasks.transformation import sort_values as sort_values
-from ecoscope_workflows_ext_custom.tasks.results import (
-    create_path_layer as create_path_layer_1,
-)
-from ecoscope_workflows_ext_custom.tasks.results import draw_map as draw_map_1
 from ecoscope_workflows_ext_ste.tasks.spatial_operations import (
     compute_view_state_from_gdf as compute_view_state_from_gdf,
 )
@@ -196,7 +192,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
     )
 
     base_maps_pydeck = (
-        task(set_base_maps_pydeck)
+        task(set_base_maps)
         .validate()
         .set_task_instance_id("base_maps_pydeck")
         .handle_errors()
@@ -482,14 +478,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         )
         .partial(
             relocations=previous_relocations,
-            trajectory_segment_filter={
-                "min_length_meters": 0.001,
-                "max_length_meters": 100000,
-                "min_time_secs": 1,
-                "max_time_secs": 172800,
-                "min_speed_kmhr": 0.01,
-                "max_speed_kmhr": 500,
-            },
+            trajectory_segment_filter=segment_filter,
             **(params.get("previous_relocs_to_trajs") or {}),
         )
         .call()
@@ -610,7 +599,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .partial(
             df=map_previous_trajs,
             column_name="duration_status",
-            default_value="Historic Tracks",
+            default_value="Comparison Tracks",
             **(params.get("previous_duration_status") or {}),
         )
         .call()
@@ -700,10 +689,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         )
         .partial(
             hex_column="hex_color",
-            previous_color_hex="#a9a9a9",
-            default_current_hex="#6495ed",
             current_status="Current Tracks",
-            use_hex_column_for_current=True,
             status_column="duration_status",
             **(params.get("status_color_columns") or {}),
         )
@@ -725,7 +711,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         )
         .partial(
             column_name="duration_status",
-            ascending=True,
             na_position="last",
             **(params.get("sort_values_by_status") or {}),
         )
@@ -760,7 +745,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
     )
 
     path_layer = (
-        task(create_path_layer_1)
+        task(create_path_layer)
         .validate()
         .set_task_instance_id("path_layer")
         .handle_errors()
@@ -773,6 +758,11 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
+            tooltip_columns=[
+                "duration_status",
+                "subject_name",
+                "duration_status_colors",
+            ],
             layer_style={
                 "auto_highlight": False,
                 "opacity": 0.75,
@@ -847,7 +837,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
     )
 
     current_previous_map = (
-        task(draw_map_1)
+        task(draw_map)
         .validate()
         .set_task_instance_id("current_previous_map")
         .handle_errors()
@@ -860,6 +850,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(
+            output_type="html",
             tile_layers=base_maps_pydeck,
             static=False,
             title=None,

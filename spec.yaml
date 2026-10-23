@@ -5,11 +5,11 @@ requirements:
   channel: https://repo.prefix.dev/ecoscope-workflows/
 
 - name: ecoscope-workflows-ext-custom
-  version: ==0.1.0rc14
+  version: "0.1.4.*"
   channel: https://repo.prefix.dev/ecoscope-workflows-custom/
 
 - name: ecoscope-workflows-ext-ste
-  version: ==0.0.0rc1
+  version: "0.0.24.*"
   channel: https://repo.prefix.dev/ecoscope-workflows-custom/
 
 - name: pydeck
@@ -30,11 +30,37 @@ rjsf-overrides:
           depends_on: properties.er_connection.properties.data_source.properties.name
 
     # Comparison period: defaults to a period as long as the current one, ending where it starts
-    previous_time_range.description: "The earlier period whose tracks are drawn in grey under the current tracks. It always ends where the current time range starts."
+    previous_time_range.description: "The earlier period whose tracks are drawn as comparison tracks (grey and under the current tracks by default). It always ends where the current time range starts."
     previous_time_range.properties.offset.title: Comparison Period Length
     previous_time_range.properties.offset.description: "How far back the comparison period starts: a preset (e.g. the same length as the current period), a custom offset, or a start date picked on the calendar."
     previous_time_range.properties.offset.default:
       preset: Same as current period
+
+    # Track Order and Colors group. Track Colors: colour pickers for comparison and current tracks
+    Track Order and Colors.properties.status_color_columns.properties.previous_color_hex:
+      title: Historic Tracks Color
+      type: string
+      format: color
+      default: '#a9a9a9'
+      description: Colour of the tracks from the historic period.
+    Track Order and Colors.properties.status_color_columns.properties.use_hex_column_for_current:
+      title: Use subject colors for current tracks
+      type: boolean
+      default: true
+      description: Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color below for every subject.
+    Track Order and Colors.properties.status_color_columns.properties.default_current_hex:
+      title: Current Tracks Color
+      type: string
+      format: color
+      default: '#6495ed'
+      description: Colour of the current tracks when "Use subject colors for current tracks" is unticked.
+
+    # Track Order: which tracks draw on top where they overlap
+    Track Order and Colors.properties.sort_values_by_status.properties.ascending:
+      title: Current tracks on top
+      type: boolean
+      default: true
+      description: Draw current tracks over historic tracks where they overlap. Untick to draw historic tracks on top.
 
   $defs:
     PresetPreviousPeriod.properties.preset.default: Same as current period
@@ -79,9 +105,9 @@ workflow:
       id: subject_group_name
       task: set_string_var
 
-- name: Configure basemap layers
+- name: Base Maps
   id: base_maps_pydeck
-  task: set_base_maps_pydeck
+  task: set_base_maps
 
 - name: Current Subject Group Observations
   id: current_observations
@@ -221,13 +247,7 @@ workflow:
   task: relocations_to_trajectory
   partial:
     relocations: ${{ workflow.previous_relocations.return }}
-    trajectory_segment_filter:
-      min_length_meters: 0.001
-      max_length_meters: 100000
-      min_time_secs: 1
-      max_time_secs: 172800
-      min_speed_kmhr: 0.01
-      max_speed_kmhr: 500
+    trajectory_segment_filter: ${{ workflow.segment_filter.return }}
 
 - name: Persist Current Trajectories
   id: persist_current_trajectories
@@ -277,7 +297,7 @@ workflow:
   partial:
     df: ${{ workflow.map_previous_trajs.return }}
     column_name: duration_status
-    default_value: Historic Tracks
+    default_value: Comparison Tracks
 
 - name: Concatenate Current and Previous Dataframes
   id: dataframes
@@ -316,32 +336,36 @@ workflow:
     df: ${{ workflow.temporal_index.return }}
     groupers: ${{ workflow.groupers.return }}
 
-- name: Add Status Color Columns
-  id: status_color_columns
-  task: add_status_color_columns
-  partial:
-    hex_column: hex_color
-    previous_color_hex: '#a9a9a9'
-    default_current_hex: '#6495ed'
-    current_status: Current Tracks
-    use_hex_column_for_current: true
-    status_column: duration_status
-  mapvalues:
-    argnames:
-    - df
-    argvalues: ${{ workflow.groups.return }}
-
-- name: Sort Values by Duration Status
-  id: sort_values_by_status
-  task: sort_values
-  partial:
-    column_name: duration_status
-    ascending: true
-    na_position: last
-  mapvalues:
-    argnames:
-    - df
-    argvalues: ${{ workflow.status_color_columns.return }}
+- title: Track Order and Colors
+  type: task-group
+  description: The colours for comparison and current tracks, and which draw on top where they overlap.
+  tasks:
+  # Comparison tracks get one colour; current tracks use each subject's EarthRanger
+  # hex_color unless the checkbox is unticked, then the picked colour.
+  - name: Track Colors
+    id: status_color_columns
+    task: add_status_color_columns
+    partial:
+      hex_column: hex_color
+      current_status: Current Tracks
+      status_column: duration_status
+    mapvalues:
+      argnames:
+      - df
+      argvalues: ${{ workflow.groups.return }}
+  # Rows draw in order, so the label sorted last ends up on top: "Comparison Tracks" < "Current Tracks",
+  # so ascending puts current over comparison. `ascending` is the form's "Current tracks on top" checkbox,
+  # and matches sort_values' own default (true) when a run leaves it out.
+  - name: Track Order
+    id: sort_values_by_status
+    task: sort_values
+    partial:
+      column_name: duration_status
+      na_position: last
+    mapvalues:
+      argnames:
+      - df
+      argvalues: ${{ workflow.status_color_columns.return }}
 
 - name: Subset Columns
   id: columns
@@ -361,8 +385,12 @@ workflow:
 
 - name: Create Path Layer
   id: path_layer
-  task: ecoscope_workflows_ext_custom.tasks.results.create_path_layer
+  task: create_path_layer
   partial:
+    tooltip_columns:
+      - duration_status
+      - subject_name
+      - duration_status_colors
     layer_style:
       auto_highlight: false
       opacity: 0.75
@@ -414,8 +442,9 @@ workflow:
 
 - name: Draw Current Previous Map
   id: current_previous_map
-  task: ecoscope_workflows_ext_custom.tasks.results.draw_map
+  task: draw_map
   partial:
+    output_type: html
     tile_layers: ${{ workflow.base_maps_pydeck.return }}
     static: false
     title: null

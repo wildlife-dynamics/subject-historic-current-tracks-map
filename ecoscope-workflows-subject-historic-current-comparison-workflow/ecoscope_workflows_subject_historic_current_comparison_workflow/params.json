@@ -140,12 +140,14 @@
             {
               "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
               "opacity": 1,
-              "max_zoom": 20
+              "max_zoom": 20,
+              "min_zoom": 0
             },
             {
               "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
               "opacity": 0.5,
-              "max_zoom": 20
+              "max_zoom": 20,
+              "min_zoom": 0
             }
           ],
           "items": {
@@ -166,6 +168,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -190,6 +193,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -214,6 +218,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -238,6 +243,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -245,30 +251,6 @@
                   }
                 },
                 "title": "Terrain",
-                "type": "object"
-              },
-              {
-                "description": "A tiled raster layer loaded on-demand from a URL template (e.g., base maps).",
-                "properties": {
-                  "url": {
-                    "default": "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}",
-                    "title": "Preset Layer URL",
-                    "type": "string",
-                    "const": "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}",
-                    "enum": [
-                      "https://tiles.arcgis.com/tiles/POUcpLYXNckpLjnY/arcgis/rest/services/landDx_basemap_tiles_mapservice/MapServer/tile/{z}/{y}/{x}"
-                    ]
-                  },
-                  "opacity": {
-                    "default": 1,
-                    "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
-                    "maximum": 1.0,
-                    "minimum": 0.0,
-                    "title": "Layer Opacity",
-                    "type": "number"
-                  }
-                },
-                "title": "LandDx",
                 "type": "object"
               },
               {
@@ -286,6 +268,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Layer Opacity",
@@ -308,6 +291,7 @@
                   "opacity": {
                     "default": 1,
                     "description": "Set layer transparency from 1 (fully visible) to 0 (hidden).",
+                    "ecoscope:advanced": true,
                     "maximum": 1.0,
                     "minimum": 0.0,
                     "title": "Custom Layer Opacity",
@@ -339,7 +323,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "Configure basemap layers"
+      "title": "Base Maps"
     },
     "previous_time_range": {
       "additionalProperties": false,
@@ -365,6 +349,51 @@
       ],
       "type": "object",
       "title": "Comparison Period"
+    },
+    "status_color_columns": {
+      "additionalProperties": false,
+      "properties": {
+        "previous_color_hex": {
+          "title": "Previous Color Hex",
+          "type": "string"
+        },
+        "use_hex_column_for_current": {
+          "default": true,
+          "title": "Use Hex Column For Current",
+          "type": "boolean"
+        },
+        "default_current_hex": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Current Hex"
+        }
+      },
+      "required": [
+        "previous_color_hex"
+      ],
+      "type": "object",
+      "title": "Track Colors"
+    },
+    "sort_values_by_status": {
+      "additionalProperties": false,
+      "properties": {
+        "ascending": {
+          "default": true,
+          "title": "Ascending",
+          "type": "boolean",
+          "description": "Sort ascending if true"
+        }
+      },
+      "required": [],
+      "type": "object",
+      "title": "Track Order"
     }
   },
   "$defs": {
@@ -509,6 +538,13 @@
         "max_speed_kmhr"
       ]
     },
+    "status_color_columns": {
+      "ui:order": [
+        "previous_color_hex",
+        "use_hex_column_for_current",
+        "default_current_hex"
+      ]
+    },
     "ui:order": [
       "workflow_details",
       "er_connection",
@@ -516,7 +552,9 @@
       "segment_filter",
       "subject_group_name",
       "base_maps_pydeck",
-      "previous_time_range"
+      "previous_time_range",
+      "status_color_columns",
+      "sort_values_by_status"
     ]
   },
   "additionalProperties": false
