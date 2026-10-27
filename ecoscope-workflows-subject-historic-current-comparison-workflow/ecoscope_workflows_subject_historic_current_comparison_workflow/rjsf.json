@@ -575,7 +575,17 @@
           "previous_color_hex",
           "use_hex_column_for_current",
           "default_current_hex"
-        ]
+        ],
+        "previous_color_hex": {
+          "ui:style": {
+            "maxWidth": "120px"
+          }
+        },
+        "default_current_hex": {
+          "ui:style": {
+            "maxWidth": "120px"
+          }
+        }
       }
     },
     "ui:order": [

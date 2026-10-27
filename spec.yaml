@@ -65,6 +65,14 @@ rjsf-overrides:
   $defs:
     PresetPreviousPeriod.properties.preset.default: Same as current period
 
+  uiSchema:
+    # Keep the historic/current colour pickers swatch-sized instead of stretching across the form.
+    # The form applies ui:style to the field's wrapper.
+    Track Order and Colors.status_color_columns.previous_color_hex.ui:style:
+      maxWidth: 120px
+    Track Order and Colors.status_color_columns.default_current_hex.ui:style:
+      maxWidth: 120px
+
 task-instance-defaults:
   skipif:
     conditions:
