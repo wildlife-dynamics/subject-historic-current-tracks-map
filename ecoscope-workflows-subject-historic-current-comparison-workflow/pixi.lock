@@ -44,7 +44,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/arro3-compute-0.9.1-py312h9f92c4b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/arro3-core-0.9.1-py312h9f92c4b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/arro3-io-0.9.1-py312h9f92c4b_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/astropy-base-8.0.2-py312h0ec8046_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/astropy-base-8.0.3-py312h0ec8046_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/at-spi2-atk-2.38.0-h0630a04_3.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/at-spi2-core-2.40.3-h0630a04_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/atk-1.0-2.38.0-hc5c8e38_3.conda
@@ -138,8 +138,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libcrc32c-1.1.2-hee9eb32_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libcups-2.3.3-h7a8fb5f_6.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libcurl-8.23.0-ha042cf0_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libcxx-23.1.5-ha0f52bf_2.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libcxxabi-23.1.5-h9fd08b6_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libcxx-23.1.6-ha0f52bf_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libcxxabi-23.1.6-h9fd08b6_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libdeflate-1.25-hd45a770_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libdrm-2.4.129-h7cc23a3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libedit-3.1.20260512-pl5321h373387f_0.conda
@@ -580,7 +580,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/arro3-compute-0.9.1-py312hf1b621f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/arro3-core-0.9.1-py312hf1b621f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/arro3-io-0.9.1-py312hf1b621f_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/astropy-base-8.0.2-py312h680515d_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/astropy-base-8.0.3-py312h680515d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/at-spi2-atk-2.38.0-h1f2db35_3.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/at-spi2-core-2.40.3-h1f2db35_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/atk-1.0-2.38.0-ha2fe6ec_3.conda
@@ -1356,7 +1356,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/arro3-compute-0.9.1-py312h397144c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/arro3-core-0.9.1-py312h397144c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/arro3-io-0.9.1-py312h397144c_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/astropy-base-8.0.2-py312h7393e0f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/astropy-base-8.0.3-py312h7393e0f_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/atk-1.0-2.38.0-h4bec284_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/aws-c-auth-1.0.0-h87af9f7_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/aws-c-cal-1.0.0-h704dcf7_1.conda
@@ -1867,7 +1867,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/arro3-compute-0.9.1-py312h0c5ae6b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/arro3-core-0.9.1-py312h0c5ae6b_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/arro3-io-0.9.1-py312h0c5ae6b_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/astropy-base-8.0.2-py312h23212ae_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/astropy-base-8.0.3-py312h23212ae_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/atk-1.0-2.38.0-hd03087b_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/aws-c-auth-1.0.0-h7ad4001_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/aws-c-cal-1.0.0-h50d513f_1.conda
@@ -4410,12 +4410,12 @@ packages:
   run_exports: {}
   size: 6322887
   timestamp: 1791848496963
-- conda: https://conda.anaconda.org/conda-forge/linux-64/astropy-base-8.0.2-py312h0ec8046_0.conda
-  sha256: 48c30864b05250db12c7652939eba245f8f368c832e324a7c1731225f01b5d4f
-  md5: 5b2ea837cd386041bd2e92e27c484d2d
+- conda: https://conda.anaconda.org/conda-forge/linux-64/astropy-base-8.0.3-py312h0ec8046_0.conda
+  sha256: 930ee4785d64e7df193e62ce1c1d54c68f84a01a2000a8fefb5a93139591de1b
+  md5: 9d06ff087aaf0cf7ad0e935809a3fc32
   depends:
   - __glibc >=2.17,<3.0.a0
-  - astropy-iers-data >=0.2026.9.28.0.59.37
+  - astropy-iers-data >=0.2026.10.19.0.52.1
   - libgcc >=15
   - numpy >=1.25,<3
   - numpy >=2.0
@@ -4427,10 +4427,9 @@ packages:
   constrains:
   - astropy >=7.0.0
   license: BSD-3-Clause
-  license_family: BSD
   run_exports: {}
-  size: 10007516
-  timestamp: 1792171066565
+  size: 9805608
+  timestamp: 1794987651183
 - conda: https://conda.anaconda.org/conda-forge/linux-64/at-spi2-atk-2.38.0-h0630a04_3.tar.bz2
   sha256: 26ab9386e80bf196e51ebe005da77d57decf6d989b4f34d96130560bc133479c
   md5: 6b889f174df1e0f816276ae69281af4d
@@ -6151,33 +6150,33 @@ packages:
     - libcurl >=8.23.0,<9.0a0
   size: 505683
   timestamp: 1791990900844
-- conda: https://conda.anaconda.org/conda-forge/linux-64/libcxx-23.1.5-ha0f52bf_2.conda
-  sha256: 71f83ed55dab8429e81f7bfdadae1af8c003a77e550b07522d8c29f2fc97e328
-  md5: 004854509bd1d2982ac9fa7ac084e4ab
+- conda: https://conda.anaconda.org/conda-forge/linux-64/libcxx-23.1.6-ha0f52bf_0.conda
+  sha256: 8bacf6a1d5b10349d05cf18fdd6479514b116425f53a147e87aa25916e520dfb
+  md5: 351033fb1d887650b5653596f8d47eed
   depends:
   - __glibc >=2.28,<3.0.a0
-  - libcxxabi 23.1.5 h9fd08b6_2
+  - libcxxabi 23.1.6 h9fd08b6_0
   - libgcc >=16
   constrains:
   - sysroot_linux-64 >=2.28
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   run_exports: {}
-  size: 2374955
-  timestamp: 1794552264133
-- conda: https://conda.anaconda.org/conda-forge/linux-64/libcxxabi-23.1.5-h9fd08b6_2.conda
-  sha256: 3d3077a974d66d4aadf0a82eee450175f2f607778fe2d29c3cd4431ec674e394
-  md5: cad647a9ca66c6877d78b63fdf1100f9
+  size: 2054440
+  timestamp: 1794984094133
+- conda: https://conda.anaconda.org/conda-forge/linux-64/libcxxabi-23.1.6-h9fd08b6_0.conda
+  sha256: 42ccfcd01b22f5b5451bc9dd347f3bca36853ca73916674e2d1c4c5ef8fefddd
+  md5: 24e823e2574283df3155a853d9c67f8e
   depends:
   - __glibc >=2.28,<3.0.a0
   - libgcc >=16
   constrains:
-  - libcxx 23.1.5.*
+  - libcxx 23.1.6.*
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   run_exports: {}
-  size: 177715
-  timestamp: 1794552259679
+  size: 179659
+  timestamp: 1794984090576
 - conda: https://conda.anaconda.org/conda-forge/linux-64/libdeflate-1.25-hd45a770_1.conda
   sha256: 82e134c8a08b1eed9a2ed8ab578b89aa1730dcde3dea8dd87645ed0637878e54
   md5: 40f9b31aa9cf007789867df0decd0492
@@ -9729,11 +9728,11 @@ packages:
   run_exports: {}
   size: 5996114
   timestamp: 1791848431816
-- conda: https://conda.anaconda.org/conda-forge/linux-aarch64/astropy-base-8.0.2-py312h680515d_0.conda
-  sha256: cf582e3ecba97be51f129ab4663a3eae8935e8ee7a2fe9120992e3984a70892d
-  md5: 3fe1f04387f4a260a72a758378fc1fad
+- conda: https://conda.anaconda.org/conda-forge/linux-aarch64/astropy-base-8.0.3-py312h680515d_0.conda
+  sha256: 6f2d19966f1f139682c76f2e75046d2d84580f8921772c5b57c11c3ceb20b999
+  md5: da893b43d6c8b79fd59d7dad18107f2c
   depends:
-  - astropy-iers-data >=0.2026.9.28.0.59.37
+  - astropy-iers-data >=0.2026.10.19.0.52.1
   - libgcc >=15
   - numpy >=1.25,<3
   - numpy >=2.0
@@ -9745,10 +9744,9 @@ packages:
   constrains:
   - astropy >=7.0.0
   license: BSD-3-Clause
-  license_family: BSD
   run_exports: {}
-  size: 9946156
-  timestamp: 1792171030268
+  size: 9966866
+  timestamp: 1794987598377
 - conda: https://conda.anaconda.org/conda-forge/linux-aarch64/at-spi2-atk-2.38.0-h1f2db35_3.tar.bz2
   sha256: c2c2c998d49c061e390537f929e77ce6b023ef22b51a0f55692d6df7327f3358
   md5: 4ea9d4634f3b054549be5e414291801e
@@ -18508,12 +18506,12 @@ packages:
   run_exports: {}
   size: 6116248
   timestamp: 1791850333006
-- conda: https://conda.anaconda.org/conda-forge/osx-64/astropy-base-8.0.2-py312h7393e0f_0.conda
-  sha256: f475723ca723e8b0b1d97d835f7d1e9593b9cfa6dbd17bb43ade3a4157177406
-  md5: a89b72b944a08d2f92e5535f6b8696db
+- conda: https://conda.anaconda.org/conda-forge/osx-64/astropy-base-8.0.3-py312h7393e0f_0.conda
+  sha256: 19a5e8136dbe41886c655b05c0881b55ac036bfa123e93ee0e54938108eea8ae
+  md5: 777a69bc5f9f3a9f9d9550b0327c602b
   depends:
   - __osx >=11.0
-  - astropy-iers-data >=0.2026.9.28.0.59.37
+  - astropy-iers-data >=0.2026.10.19.0.52.1
   - numpy >=1.25,<3
   - numpy >=2.0
   - packaging >=25.0
@@ -18524,10 +18522,9 @@ packages:
   constrains:
   - astropy >=7.0.0
   license: BSD-3-Clause
-  license_family: BSD
   run_exports: {}
-  size: 9803481
-  timestamp: 1792171615148
+  size: 9694653
+  timestamp: 1794987901048
 - conda: https://conda.anaconda.org/conda-forge/osx-64/atk-1.0-2.38.0-h4bec284_2.conda
   sha256: a5972a943764e46478c966b26be61de70dcd7d0cfda4bd0b0c46916ae32e0492
   md5: d9684247c943d492d9aac8687bc5db77
@@ -23281,12 +23278,12 @@ packages:
   run_exports: {}
   size: 5568929
   timestamp: 1791848404913
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/astropy-base-8.0.2-py312h23212ae_0.conda
-  sha256: a66ab3b6383d9628261afff1baa78d9f21828bba87792464cce2dba366336776
-  md5: 74fac2575a0129d9ede37bd8cbe434e7
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/astropy-base-8.0.3-py312h23212ae_0.conda
+  sha256: 0e8d7ca6c7a532261935686540da0995e907250a7332285bd23c7f44a00df7b5
+  md5: 79a2eb40297c4db621bcf48551f8979f
   depends:
   - __osx >=11.0
-  - astropy-iers-data >=0.2026.9.28.0.59.37
+  - astropy-iers-data >=0.2026.10.19.0.52.1
   - numpy >=1.25,<3
   - numpy >=2.0
   - packaging >=25.0
@@ -23297,10 +23294,9 @@ packages:
   constrains:
   - astropy >=7.0.0
   license: BSD-3-Clause
-  license_family: BSD
   run_exports: {}
-  size: 9766111
-  timestamp: 1792171027037
+  size: 9792314
+  timestamp: 1794987578335
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/atk-1.0-2.38.0-hd03087b_2.conda
   sha256: b0747f9b1bc03d1932b4d8c586f39a35ac97e7e72fe6e63f2b2a2472d466f3c1
   md5: 57301986d02d30d6805fdce6c99074ee

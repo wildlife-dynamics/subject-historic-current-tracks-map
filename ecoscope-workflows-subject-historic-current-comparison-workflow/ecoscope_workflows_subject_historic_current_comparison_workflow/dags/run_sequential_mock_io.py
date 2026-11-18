@@ -768,7 +768,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
                 "pickable": True,
                 "get_path": "geometry.coordinates",
                 "get_color": "duration_status_colors",
-                "get_width": 2.25,
+                "get_width": 1.75,
                 "width_scale": 1,
                 "width_min_pixels": 0,
                 "width_max_pixels": None,

@@ -18,7 +18,7 @@
       ],
       "type": "object",
       "description": "Add information that will help to differentiate this workflow from another.",
-      "title": "Set Workflow Details"
+      "title": "Workflow Details"
     },
     "er_connection": {
       "additionalProperties": false,
@@ -33,7 +33,7 @@
         "data_source"
       ],
       "type": "object",
-      "title": "Connect to EarthRanger"
+      "title": "Data Source"
     },
     "time_range": {
       "additionalProperties": false,
@@ -66,7 +66,7 @@
       ],
       "type": "object",
       "description": "Choose the period of time to analyze.",
-      "title": "Set Time Range"
+      "title": "Time Range"
     },
     "subject_group_name": {
       "additionalProperties": false,
@@ -108,7 +108,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "Set Groupers"
+      "title": "Group Data"
     },
     "segment_filter": {
       "additionalProperties": false,
@@ -351,7 +351,7 @@
       },
       "type": "object",
       "required": [],
-      "title": "Base Maps"
+      "title": "Map Base Layers"
     },
     "previous_time_range": {
       "additionalProperties": false,

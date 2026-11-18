@@ -59,10 +59,8 @@ requirements:
 rjsf-overrides:
   properties:
     # Groupers: only "All" (leave the list empty, the default) or Category → Subject Name.
-    groupers.properties.groupers.title: Group by
     groupers.properties.groupers.description: >-
-      Add a Subject Name entry to split the dashboard into one map per subject.
-      Leave it empty to show all subjects on a single map.
+      Specify how the data should be grouped to create the views for your dashboard. This field is optional; if left blank, all the data will appear in a single view.
     groupers.properties.groupers.items.anyOf:
     - type: object
       title: Category
@@ -132,15 +130,15 @@ task-instance-defaults:
     - any_dependency_skipped
 
 workflow:
-- name: Set Workflow Details
+- name: Workflow Details
   id: workflow_details
   task: set_workflow_details
 
-- name: Connect to EarthRanger
+- name: Data Source
   id: er_connection
   task: set_er_connection
 
-- name: Set Time Range
+- name: Time Range
   id: time_range
   task: set_time_range
   partial:
@@ -154,7 +152,7 @@ workflow:
       id: subject_group_name
       task: set_string_var
 
-- name: Set Groupers
+- name: Group Data
   id: groupers
   task: set_groupers
 
@@ -162,7 +160,7 @@ workflow:
   id: segment_filter
   task: trajectory_segment_filter
 
-- name: Base Maps
+- name: Map Base Layers
   id: base_maps_pydeck
   task: set_base_maps
 
@@ -452,7 +450,7 @@ workflow:
       pickable: true
       get_path: geometry.coordinates
       get_color: duration_status_colors
-      get_width: 2.25
+      get_width: 1.75
       width_scale: 1
       width_min_pixels: 0
       width_max_pixels: null
