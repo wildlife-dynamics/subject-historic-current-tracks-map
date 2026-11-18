@@ -4,6 +4,6 @@ author:
   organization: Wildlife Dynamics
   email: tevin@wildlifedynamics.com
 description: >-
-  Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a comparison period just before it.
-  Current tracks are drawn in the subject's EarthRanger colour, previous tracks in grey, with one map per subject.
+  Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a historic period just before it.
+  Current tracks are always drawn on top, in the subject's EarthRanger colour by default, with historic tracks in grey, on one map for the whole group or one map per subject.
 citation: []

@@ -1,12 +1,99 @@
 designer-run:
   name: subject-historic-current-comparison
   description: The values used with ▶ Run in the designer.
+  mock_io: true
   params:
     workflow_details:
-      name: j
+      name: Historic and Current Tracks
+    groupers:
+      groupers: []
+    er_connection:
+      data_source:
+        name: Sample EarthRanger
+    time_range:
+      since: '2025-06-15T00:00:00'
+      until: '2025-06-28T23:59:59'
+    subject_group_name:
+      var: Lions
+    previous_time_range:
+      offset:
+        preset: Same as current period
     status_color_columns:
       previous_color_hex: '#a9a9a9'
       use_hex_column_for_current: true
       default_current_hex: '#6495ed'
-    sort_values_by_status:
-      ascending: true
+
+# Every case runs with mock IO, so CI needs no data-source secrets: the io-tagged
+# get_subjectgroup_observations returns the platform's packaged example fixture for
+# both the current and the historic fetch (the mock ignores time_range and the
+# connection), so these exercise the whole pipeline but not the two periods differing.
+
+base:
+  name: Form defaults
+  description: >-
+    Every field at its form default (subject colours for current tracks, grey historic
+    tracks, comparison period the same length as the current one, no grouping) on the
+    packaged subject-group fixture. Covers both fetches, the concatenate/sort/colour
+    steps and the single "All" map.
+  mock_io: true
+  params:
+    workflow_details:
+      name: Historic and Current Tracks - defaults
+      description: Mock IO, form defaults
+    groupers:
+      groupers: []
+    er_connection:
+      data_source:
+        name: Sample EarthRanger
+    time_range:
+      since: '2024-03-01T00:00:00'
+      until: '2024-03-31T23:59:59'
+      timezone:
+        label: Africa/Nairobi (UTC+03:00)
+        tzCode: Africa/Nairobi
+        name: (UTC+03:00) Nairobi
+        utc: '+03:00'
+    subject_group_name:
+      var: Elephants
+    previous_time_range:
+      offset:
+        preset: Same as current period
+    status_color_columns:
+      previous_color_hex: '#a9a9a9'
+      use_hex_column_for_current: true
+      default_current_hex: '#6495ed'
+
+single-current-color:
+  name: One colour for current tracks
+  description: >-
+    "Use subject colors for current tracks" unticked, so every subject's current tracks
+    use the picked Current Tracks Color; non-default historic colour, the
+    "3 months back" comparison period, and grouped by subject name (one map per subject).
+  mock_io: true
+  params:
+    workflow_details:
+      name: Historic and Current Tracks - single colour
+      description: Mock IO, one current colour, 3 months back
+    groupers:
+      groupers:
+      - index_name: subject_name
+    er_connection:
+      data_source:
+        name: Sample EarthRanger
+    time_range:
+      since: '2024-03-01T00:00:00'
+      until: '2024-03-31T23:59:59'
+      timezone:
+        label: Africa/Nairobi (UTC+03:00)
+        tzCode: Africa/Nairobi
+        name: (UTC+03:00) Nairobi
+        utc: '+03:00'
+    subject_group_name:
+      var: Elephants
+    previous_time_range:
+      offset:
+        preset: 3 months back
+    status_color_columns:
+      previous_color_hex: '#8c6d31'
+      use_hex_column_for_current: false
+      default_current_hex: '#d62728'

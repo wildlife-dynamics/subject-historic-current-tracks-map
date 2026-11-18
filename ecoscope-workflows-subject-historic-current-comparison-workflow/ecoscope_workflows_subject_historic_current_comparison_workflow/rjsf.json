@@ -20,6 +20,45 @@
       "description": "Add information that will help to differentiate this workflow from another.",
       "title": "Set Workflow Details"
     },
+    "groupers": {
+      "additionalProperties": false,
+      "properties": {
+        "groupers": {
+          "default": null,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "Category",
+                "properties": {
+                  "index_name": {
+                    "title": "Category",
+                    "type": "string",
+                    "oneOf": [
+                      {
+                        "const": "subject_name",
+                        "title": "Subject Name"
+                      }
+                    ],
+                    "default": "subject_name"
+                  }
+                },
+                "required": [
+                  "index_name"
+                ]
+              }
+            ],
+            "title": "Group by"
+          },
+          "title": "Group by",
+          "type": "array",
+          "description": "Add a Subject Name entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map."
+        }
+      },
+      "type": "object",
+      "required": [],
+      "title": "Set Groupers"
+    },
     "er_connection": {
       "additionalProperties": false,
       "properties": {
@@ -369,61 +408,113 @@
       ],
       "type": "object",
       "title": "Comparison Period",
-      "description": "The earlier period whose tracks are drawn as comparison tracks (grey and under the current tracks by default). It always ends where the current time range starts."
+      "description": "The earlier period whose tracks are drawn as historic tracks, under the current tracks (grey by default). It always ends where the current time range starts."
     },
-    "Track Order and Colors": {
-      "type": "object",
-      "description": "The colours for historic and current tracks, and which draw on top where they overlap.",
-      "ecoscope:task_group": true,
+    "status_color_columns": {
+      "additionalProperties": false,
       "properties": {
-        "status_color_columns": {
-          "additionalProperties": false,
-          "properties": {
-            "previous_color_hex": {
-              "title": "Historic Tracks Color",
-              "type": "string",
-              "format": "color",
-              "default": "#a9a9a9",
-              "description": "Colour of the tracks from the historic period."
-            },
-            "use_hex_column_for_current": {
-              "title": "Use subject colors for current tracks",
-              "type": "boolean",
-              "default": true,
-              "description": "Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color below for every subject."
-            },
-            "default_current_hex": {
-              "title": "Current Tracks Color",
-              "type": "string",
-              "format": "color",
-              "default": "#6495ed",
-              "description": "Colour of the current tracks when \"Use subject colors for current tracks\" is unticked."
-            }
-          },
-          "required": [
-            "previous_color_hex"
-          ],
-          "type": "object",
-          "title": "Track Colors"
+        "previous_color_hex": {
+          "title": "Historic Tracks Color",
+          "type": "string",
+          "format": "color",
+          "default": "#a9a9a9",
+          "description": "Colour of the tracks from the historic period."
         },
-        "sort_values_by_status": {
-          "additionalProperties": false,
-          "properties": {
-            "ascending": {
-              "title": "Current tracks on top",
-              "type": "boolean",
-              "default": true,
-              "description": "Draw current tracks over historic tracks where they overlap. Untick to draw historic tracks on top."
-            }
-          },
-          "required": [],
-          "type": "object",
-          "title": "Track Order"
+        "use_hex_column_for_current": {
+          "title": "Use subject colors for current tracks",
+          "type": "boolean",
+          "default": true,
+          "description": "Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color below for every subject."
+        },
+        "default_current_hex": {
+          "title": "Current Tracks Color",
+          "type": "string",
+          "format": "color",
+          "default": "#6495ed",
+          "description": "Colour of the current tracks when \"Use subject colors for current tracks\" is unticked."
         }
-      }
+      },
+      "required": [
+        "previous_color_hex"
+      ],
+      "type": "object",
+      "title": "Track Colors"
     }
   },
   "$defs": {
+    "SpatialGrouper": {
+      "properties": {
+        "spatial_index_name": {
+          "title": "Spatial Regions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "spatial_index_name"
+      ],
+      "title": "Spatial",
+      "type": "object"
+    },
+    "TemporalGrouper": {
+      "properties": {
+        "temporal_index": {
+          "oneOf": [
+            {
+              "const": "%Y",
+              "title": "Year (example: 2024)"
+            },
+            {
+              "const": "%B",
+              "title": "Month (example: September)"
+            },
+            {
+              "const": "%Y-%m",
+              "title": "Year and Month (example: 2023-01)"
+            },
+            {
+              "const": "%j",
+              "title": "Day of the year as a number (example: 365)"
+            },
+            {
+              "const": "%d",
+              "title": "Day of the month as a number (example: 31)"
+            },
+            {
+              "const": "%A",
+              "title": "Day of the week (example: Sunday)"
+            },
+            {
+              "const": "%H",
+              "title": "Hour (24-hour clock) as number (example: 22)"
+            },
+            {
+              "const": "%Y-%m-%d",
+              "title": "Date (example: 2025-01-31)"
+            }
+          ],
+          "title": "Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "temporal_index"
+      ],
+      "title": "Time",
+      "type": "object"
+    },
+    "ValueGrouper": {
+      "properties": {
+        "index_name": {
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index_name"
+      ],
+      "title": "Category",
+      "type": "object"
+    },
     "EarthRangerConnection": {
       "properties": {
         "name": {
@@ -565,38 +656,33 @@
         "max_speed_kmhr"
       ]
     },
-    "Track Order and Colors": {
+    "status_color_columns": {
       "ui:order": [
-        "status_color_columns",
-        "sort_values_by_status"
+        "previous_color_hex",
+        "use_hex_column_for_current",
+        "default_current_hex"
       ],
-      "status_color_columns": {
-        "ui:order": [
-          "previous_color_hex",
-          "use_hex_column_for_current",
-          "default_current_hex"
-        ],
-        "previous_color_hex": {
-          "ui:style": {
-            "maxWidth": "120px"
-          }
-        },
-        "default_current_hex": {
-          "ui:style": {
-            "maxWidth": "120px"
-          }
+      "previous_color_hex": {
+        "ui:style": {
+          "maxWidth": "120px"
+        }
+      },
+      "default_current_hex": {
+        "ui:style": {
+          "maxWidth": "120px"
         }
       }
     },
     "ui:order": [
       "workflow_details",
+      "groupers",
       "er_connection",
       "time_range",
       "segment_filter",
       "Subject Group",
       "base_maps_pydeck",
       "previous_time_range",
-      "Track Order and Colors"
+      "status_color_columns"
     ]
   },
   "additionalProperties": false
