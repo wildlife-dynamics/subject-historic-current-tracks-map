@@ -170,33 +170,27 @@ The run form is set in `spec.yaml`:
 
 ### Testing
 
-`test-cases.yaml` has two kinds of case:
+Every case in `test-cases.yaml` runs with mock IO, so CI needs no data-source secrets: the io-tagged
+`get_subjectgroup_observations` returns the platform's packaged example fixture for both the current
+and the historic fetch. The mock ignores the time range and the connection, so the historic and current
+tracks are the same in these runs.
 
-| Case | Data | What it covers |
-|---|---|---|
-| `base` | mock IO | every field at its form default, so one map for all subjects |
-| `single-current-color` | mock IO | one picked colour for all current tracks, a non-default historic colour, *3 months back*, grouped by subject name |
-| `sample-er` | Sample EarthRanger | Lions over two weeks, with the two weeks before as the historic period, all five on one map |
-| `sample-er-no-history` | Sample EarthRanger | a historic period before the Sample EarthRanger's data starts, so only current tracks are drawn; grouped by subject name |
-
-With mock IO the platform's packaged fixture stands in for both observation fetches (it ignores the
-time range), so the historic and current tracks are the same. The `sample-er` cases need the local
-Sample EarthRanger running on `http://127.0.0.1:8797` (EcoWorkbench → Connections → Sample EarthRanger →
-**Start**), with the connection passed as environment variables:
+| Case | What it covers |
+|---|---|
+| `designer-run` | the values used with ▶ Run in the designer: Lions, form defaults, one map for all subjects |
+| `base` | every field at its form default, so one map for all subjects |
+| `single-current-color` | one picked colour for all current tracks, a non-default historic colour, *3 months back*, grouped by subject name |
 
 ```bash
-# mock-IO cases
-pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --case base --skip-setup
-
-# Sample EarthRanger cases
-env 'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__SERVER=http://127.0.0.1:8797' \
-    'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__USERNAME=demo' \
-    'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__PASSWORD=demo' \
-    pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --case sample-er --skip-setup
+# run every case, as CI does
+pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --all --skip-setup
 ```
 
-Results land in `/tmp/workflow-test-results/subject_historic_current_comparison/<case>/`. The thumbnail
-(`resources/thumbnail.png`) is one lion's map from a `sample-er` run grouped by subject name (the
-Sample EarthRanger's lions are at two sites far apart, so the all-subjects map is too zoomed out to read).
+Results land in `/tmp/workflow-test-results/subject_historic_current_comparison/<case>/`.
+
+The thumbnail (`resources/thumbnail.png`) comes from a live run against the local Sample EarthRanger
+(made-up data): Lions, 15–28 June 2025, the same length before as the historic period, grouped by subject
+name. The Sample EarthRanger's lions are at two sites far apart, so the all-subjects map is too zoomed out
+to read.
 
 Documentation: [docs/index.html](docs/index.html).

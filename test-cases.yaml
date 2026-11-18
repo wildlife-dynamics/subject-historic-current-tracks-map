@@ -1,17 +1,32 @@
 designer-run:
   name: subject-historic-current-comparison
   description: The values used with ▶ Run in the designer.
+  mock_io: true
   params:
     workflow_details:
-      name: j
+      name: Historic and Current Tracks
+    groupers:
+      groupers: []
+    er_connection:
+      data_source:
+        name: Sample EarthRanger
+    time_range:
+      since: '2025-06-15T00:00:00'
+      until: '2025-06-28T23:59:59'
+    subject_group_name:
+      var: Lions
+    previous_time_range:
+      offset:
+        preset: Same as current period
     status_color_columns:
       previous_color_hex: '#a9a9a9'
       use_hex_column_for_current: true
       default_current_hex: '#6495ed'
 
-# Mock-IO cases: get_subjectgroup_observations returns the platform's packaged
-# example fixture for both the current and the historic fetch (the mock ignores
-# time_range), so these exercise the whole pipeline but not the two periods differing.
+# Every case runs with mock IO, so CI needs no data-source secrets: the io-tagged
+# get_subjectgroup_observations returns the platform's packaged example fixture for
+# both the current and the historic fetch (the mock ignores time_range and the
+# connection), so these exercise the whole pipeline but not the two periods differing.
 
 base:
   name: Form defaults
@@ -82,76 +97,3 @@ single-current-color:
       previous_color_hex: '#8c6d31'
       use_hex_column_for_current: false
       default_current_hex: '#d62728'
-
-# Live cases against the local Sample EarthRanger (http://127.0.0.1:8797, any username
-# and password). Start it from EcoWorkbench (Connections → Sample EarthRanger → Start)
-# and pass the connection as env vars; see the README's "Testing" section.
-
-sample-er:
-  name: Sample EarthRanger
-  description: >-
-    Live run against the local Sample EarthRanger (Africa scenario): the Lions group over
-    two weeks, with the two weeks before as the historic period, so the two periods have
-    different tracks. Form defaults, so all five lions are on one map.
-  mock_io: false
-  params:
-    workflow_details:
-      name: Historic and Current Tracks - Sample EarthRanger
-      description: Lions, Sample EarthRanger
-    groupers:
-      groupers: []
-    er_connection:
-      data_source:
-        name: Sample EarthRanger
-    time_range:
-      since: '2025-06-15T00:00:00'
-      until: '2025-06-28T23:59:59'
-      timezone:
-        label: Africa/Nairobi (UTC+03:00)
-        tzCode: Africa/Nairobi
-        name: (UTC+03:00) Nairobi
-        utc: '+03:00'
-    subject_group_name:
-      var: Lions
-    previous_time_range:
-      offset:
-        preset: Same as current period
-    status_color_columns:
-      previous_color_hex: '#a9a9a9'
-      use_hex_column_for_current: true
-      default_current_hex: '#6495ed'
-
-sample-er-no-history:
-  name: Sample EarthRanger, no historic tracks
-  description: >-
-    The current period starts the day the Sample EarthRanger's data starts (2024-01-01),
-    so the historic fetch comes back empty. Grouped by subject name; each map should
-    still draw, with current tracks only.
-  mock_io: false
-  params:
-    workflow_details:
-      name: Historic and Current Tracks - no history
-      description: Giraffes, empty historic period
-    groupers:
-      groupers:
-      - index_name: subject_name
-    er_connection:
-      data_source:
-        name: Sample EarthRanger
-    time_range:
-      since: '2024-01-01T00:00:00'
-      until: '2024-01-14T23:59:59'
-      timezone:
-        label: Africa/Nairobi (UTC+03:00)
-        tzCode: Africa/Nairobi
-        name: (UTC+03:00) Nairobi
-        utc: '+03:00'
-    subject_group_name:
-      var: Giraffes
-    previous_time_range:
-      offset:
-        preset: Same as current period
-    status_color_columns:
-      previous_color_hex: '#a9a9a9'
-      use_hex_column_for_current: true
-      default_current_hex: '#6495ed'
