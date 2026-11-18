@@ -1,4 +1,44 @@
 id: subject_historic_current_comparison
+
+metadata:
+  name: Subject Historic and Current Tracks Map
+  description: >-
+    Maps each subject in an EarthRanger subject group with its tracks from the chosen time
+    range drawn on top of its tracks from a historic period just before it. Current tracks
+    are drawn in the subject's EarthRanger colour (or one picked colour) and historic tracks
+    in grey, with one interactive map per subject.
+  maintainers:
+    - name: Tevin Temu
+      email: tevin@wildlifedynamics.com
+      role: owner
+  outputs:
+    - name: Movement Tracks Dashboard
+      type: dashboard
+      description: >-
+        A Movement Tracks map widget with one view per subject, switched with the
+        dashboard's subject filter.
+      indicators:
+        - name: Subject movement
+    - name: Historic and Current Tracks Map
+      type: map
+      description: >-
+        Each subject's current tracks drawn over its historic tracks, with a legend for
+        the two periods.
+      indicators:
+        - name: Subject movement
+    - name: Track Data
+      type: file
+      description: >-
+        The cleaned relocations and trajectory segments for the current and historic
+        periods (GeoParquet).
+      indicators:
+        - name: Subject movement
+  license: BSD-3-Clause
+  repository: https://github.com/wildlife-dynamics/subject-historic-current-tracks-map
+  documentation: https://github.com/wildlife-dynamics/subject-historic-current-tracks-map#readme
+  readme: README.md
+  keywords: [movement, tracks, trajectories, comparison, historic, subjects, earthranger]
+  thumbnail: resources/thumbnail.png
 requirements:
 - name: ecoscope-platform
   version: ==2.25.3
@@ -30,37 +70,30 @@ rjsf-overrides:
           depends_on: properties.er_connection.properties.data_source.properties.name
 
     # Comparison period: defaults to a period as long as the current one, ending where it starts
-    previous_time_range.description: "The earlier period whose tracks are drawn as comparison tracks (grey and under the current tracks by default). It always ends where the current time range starts."
+    previous_time_range.description: "The earlier period whose tracks are drawn as historic tracks, under the current tracks (grey by default). It always ends where the current time range starts."
     previous_time_range.properties.offset.title: Comparison Period Length
     previous_time_range.properties.offset.description: "How far back the comparison period starts: a preset (e.g. the same length as the current period), a custom offset, or a start date picked on the calendar."
     previous_time_range.properties.offset.default:
       preset: Same as current period
 
-    # Track Order and Colors group. Track Colors: colour pickers for comparison and current tracks
-    Track Order and Colors.properties.status_color_columns.properties.previous_color_hex:
+    # Track Colors: colour pickers for historic and current tracks
+    status_color_columns.properties.previous_color_hex:
       title: Historic Tracks Color
       type: string
       format: color
       default: '#a9a9a9'
       description: Colour of the tracks from the historic period.
-    Track Order and Colors.properties.status_color_columns.properties.use_hex_column_for_current:
+    status_color_columns.properties.use_hex_column_for_current:
       title: Use subject colors for current tracks
       type: boolean
       default: true
       description: Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color below for every subject.
-    Track Order and Colors.properties.status_color_columns.properties.default_current_hex:
+    status_color_columns.properties.default_current_hex:
       title: Current Tracks Color
       type: string
       format: color
       default: '#6495ed'
       description: Colour of the current tracks when "Use subject colors for current tracks" is unticked.
-
-    # Track Order: which tracks draw on top where they overlap
-    Track Order and Colors.properties.sort_values_by_status.properties.ascending:
-      title: Current tracks on top
-      type: boolean
-      default: true
-      description: Draw current tracks over historic tracks where they overlap. Untick to draw historic tracks on top.
 
   $defs:
     PresetPreviousPeriod.properties.preset.default: Same as current period
@@ -68,9 +101,9 @@ rjsf-overrides:
   uiSchema:
     # Keep the historic/current colour pickers swatch-sized instead of stretching across the form.
     # The form applies ui:style to the field's wrapper.
-    Track Order and Colors.status_color_columns.previous_color_hex.ui:style:
+    status_color_columns.previous_color_hex.ui:style:
       maxWidth: 120px
-    Track Order and Colors.status_color_columns.default_current_hex.ui:style:
+    status_color_columns.default_current_hex.ui:style:
       maxWidth: 120px
 
 task-instance-defaults:
@@ -344,36 +377,34 @@ workflow:
     df: ${{ workflow.temporal_index.return }}
     groupers: ${{ workflow.groupers.return }}
 
-- title: Track Order and Colors
-  type: task-group
-  description: The colours for historic and current tracks, and which draw on top where they overlap.
-  tasks:
-  # Historic tracks get one colour; current tracks use each subject's EarthRanger
-  # hex_color unless the checkbox is unticked, then the picked colour.
-  - name: Track Colors
-    id: status_color_columns
-    task: add_status_color_columns
-    partial:
-      hex_column: hex_color
-      current_status: Current Tracks
-      status_column: duration_status
-    mapvalues:
-      argnames:
-      - df
-      argvalues: ${{ workflow.groups.return }}
-  # Rows draw in order, so the label sorted last ends up on top: "Comparison Tracks" < "Current Tracks",
-  # so ascending puts current over comparison. `ascending` is the form's "Current tracks on top" checkbox,
-  # and matches sort_values' own default (true) when a run leaves it out.
-  - name: Track Order
-    id: sort_values_by_status
-    task: sort_values
-    partial:
-      column_name: duration_status
-      na_position: last
-    mapvalues:
-      argnames:
-      - df
-      argvalues: ${{ workflow.status_color_columns.return }}
+# Historic tracks get one colour; current tracks use each subject's EarthRanger
+# hex_color unless the checkbox is unticked, then the picked colour.
+- name: Track Colors
+  id: status_color_columns
+  task: add_status_color_columns
+  partial:
+    hex_column: hex_color
+    current_status: Current Tracks
+    status_column: duration_status
+  mapvalues:
+    argnames:
+    - df
+    argvalues: ${{ workflow.groups.return }}
+
+# Current tracks always draw on top of historic tracks; this isn't on the form.
+# Rows draw in order, so the label sorted last ends up on top. "Current Tracks" sorts
+# before "Historic Tracks", so descending puts the current rows last, over the historic ones.
+- name: Track Order
+  id: sort_values_by_status
+  task: sort_values
+  partial:
+    column_name: duration_status
+    ascending: false
+    na_position: last
+  mapvalues:
+    argnames:
+    - df
+    argvalues: ${{ workflow.status_color_columns.return }}
 
 - name: Subset Columns
   id: columns

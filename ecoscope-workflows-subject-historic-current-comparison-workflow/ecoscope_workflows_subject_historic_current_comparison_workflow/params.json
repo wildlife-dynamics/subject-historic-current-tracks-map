@@ -380,20 +380,6 @@
       ],
       "type": "object",
       "title": "Track Colors"
-    },
-    "sort_values_by_status": {
-      "additionalProperties": false,
-      "properties": {
-        "ascending": {
-          "default": true,
-          "title": "Ascending",
-          "type": "boolean",
-          "description": "Sort ascending if true"
-        }
-      },
-      "required": [],
-      "type": "object",
-      "title": "Track Order"
     }
   },
   "$defs": {
@@ -553,8 +539,7 @@
       "subject_group_name",
       "base_maps_pydeck",
       "previous_time_range",
-      "status_color_columns",
-      "sort_values_by_status"
+      "status_color_columns"
     ]
   },
   "additionalProperties": false

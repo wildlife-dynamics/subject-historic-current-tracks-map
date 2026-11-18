@@ -46,8 +46,8 @@
     </div>
 
     <div class="error-block">
-      <p class="symptom">Historic tracks cover the current tracks</p>p>
-      <p>Tick <strong>Current tracks on top</strong> under <strong>Track Order and Colors</strong>. It's on by default, and a run that leaves it out gets the same behaviour.</p>
+      <p class="symptom">Historic tracks cover the current tracks</p>
+      <p>Current tracks are always drawn on top; the form has no setting for it. If historic tracks still cover them, the <strong>Track Order</strong> step's fixed <code>ascending: false</code> has been changed or removed in <code>spec.yaml</code>, or the <em>Current Tracks</em> / <em>Historic Tracks</em> labels were renamed so they no longer sort current-first. Restore <code>ascending: false</code> (or flip it to match the new labels) and recompile.</p>
     </div>
 
     <div class="error-block">
@@ -63,8 +63,8 @@
     </div>
 
     <div class="error-block">
-      <p class="symptom">The track colours are plain text fields, or "Current tracks on top" is missing</p>
-      <p>The overrides must name the steps inside their task group: <code>Track Order and Colors.properties.status_color_columns.properties.&lt;field&gt;</code> and <code>Track Order and Colors.properties.sort_values_by_status.properties.ascending</code>. Check the group title and step ids in <code>spec.yaml</code> match, then recompile.</p>
+      <p class="symptom">The track colours are plain text fields</p>
+      <p>The overrides must name the step id: <code>status_color_columns.properties.&lt;field&gt;</code>. If the step is moved into a task group, prefix the keys with <code>&lt;group title&gt;.properties.</code>. Check the keys against <code>spec.yaml</code>, then recompile.</p>
     </div>
 
     <div class="error-block">

@@ -711,6 +711,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         )
         .partial(
             column_name="duration_status",
+            ascending=False,
             na_position="last",
             **(params.get("sort_values_by_status") or {}),
         )

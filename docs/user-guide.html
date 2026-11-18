@@ -67,14 +67,19 @@
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
       <tbody><tr><td>Comparison Period Length <em>(required)</em></td><td>How far back the comparison period starts. It always ends where the current time range starts. <strong>Preset</strong>: <em>Same as current period</em>, <em>1 month back</em>, <em>3 months back</em>, <em>6 months back</em> or <em>1 year back</em>. <strong>Custom</strong>: any number of years, months, weeks, days, hours, minutes and seconds. <strong>Calendar</strong>: an exact start date.</td><td>Preset, <code>Same as current period</code></td></tr></tbody>
     </table>
-    <h3>Track Order and Colors</h3>
+    <h3>Track Colors</h3>
+    <p>Current tracks are always drawn on top of historic tracks where they overlap.</p>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
-      <tbody><tr><td>Comparison Tracks Color <em>(required)</em></td><td>Colour of the tracks from the comparison period.</td><td><code>#a9a9a9</code> (grey)</td></tr><tr><td>Use subject colors for current tracks</td><td>Colour each subject&#x27;s current tracks with its EarthRanger colour. Untick to use the Current Tracks Color for every subject.</td><td>ticked</td></tr><tr><td>Current Tracks Color</td><td>Colour of the current tracks when <strong>Use subject colors for current tracks</strong> is unticked.</td><td><code>#6495ed</code> (blue)</td></tr><tr><td>Current tracks on top</td><td>Draw current tracks over comparison tracks where they overlap. Untick to draw comparison tracks on top.</td><td>ticked</td></tr></tbody>
+      <tbody><tr><td>Historic Tracks Color <em>(required)</em></td><td>Colour of the tracks from the historic period.</td><td><code>#a9a9a9</code> (grey)</td></tr><tr><td>Use subject colors for current tracks</td><td>Colour each subject&#x27;s current tracks with its EarthRanger colour. Untick to use the Current Tracks Color for every subject.</td><td>ticked</td></tr><tr><td>Current Tracks Color</td><td>Colour of the current tracks when <strong>Use subject colors for current tracks</strong> is unticked.</td><td><code>#6495ed</code> (blue)</td></tr></tbody>
     </table>
 
     <h2>4. Run it and find the results</h2>
-    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes. The dashboard has one <strong>Movement Tracks</strong> map per subject. With the default <strong>Track Order and Colors</strong>, the current period is drawn in the subject's EarthRanger colour on top of the comparison period in grey.</p>
+    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes. The dashboard has one <strong>Movement Tracks</strong> map per subject. The current period is always drawn on top of the historic period; with the default <strong>Track Colors</strong>, current tracks are in the subject's EarthRanger colour and historic tracks in grey.</p>
+    <figure>
+      <img src="../resources/thumbnail.png" alt="One subject's Movement Tracks map: current tracks in the subject's colour over grey historic tracks, with a legend" style="width:100%;height:auto">
+      <figcaption>One lion&#x27;s map from a run against the Sample EarthRanger (made-up data).</figcaption>
+    </figure>
   </main>
 
   <footer class="site-footer">

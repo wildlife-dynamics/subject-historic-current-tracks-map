@@ -1,6 +1,10 @@
 # subject-historic-current-comparison
 
-Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a comparison period just before it. By default, current tracks are drawn in the subject's EarthRanger colour on top of grey comparison tracks; both colours and which period is on top can be changed on the form. There is one map per subject.
+Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a historic period just before it. Current tracks are always drawn on top of historic tracks. By default they're in the subject's EarthRanger colour and the historic tracks are grey; both colours can be changed on the form. There is one map per subject.
+
+![Historic and current tracks map (Sample EarthRanger data)](resources/thumbnail.png)
+
+*One lion's map from a run against the Sample EarthRanger (made-up data): the current two weeks in the subject's colour over the two weeks before in grey.*
 
 ## What it does
 
@@ -31,8 +35,8 @@ Maps each subject in an EarthRanger subject group with its tracks from the chose
 | **Concatenate Current and Previous Dataframes** | Merge multiple dataframes into a single dataframe. |
 | **Add Temporal Index** | Indexes the tracks by segment start time. |
 | **Split Groups** | One table of tracks per subject. |
-| **Track Colors** *(Track Order and Colors)* | Colours the tracks: comparison tracks in the Comparison Tracks Color; current tracks in each subject's EarthRanger colour, or in the Current Tracks Color if that's turned off. |
-| **Track Order** *(Track Order and Colors)* | Orders the rows so current tracks are drawn on top of comparison tracks, or comparison tracks on top when **Current tracks on top** is unticked. |
+| **Track Colors** | Colours the tracks: historic tracks in the Historic Tracks Color; current tracks in each subject's EarthRanger colour, or in the Current Tracks Color if that's turned off. |
+| **Track Order** | Orders the rows so current tracks are always drawn on top of historic tracks. Not on the form. |
 | **Subset Columns** | Return a DataFrame restricted to a subset of columns. |
 | **Create Path Layer** | Creates a polyline layer definition based on the provided configuration. |
 | **Compute View State From Gdf** | Zooms each map to its subject's tracks. |
@@ -112,14 +116,15 @@ Applies to both the current and the historic tracks.
 |---|---|---|
 | Comparison Period Length *(required)* | How far back the comparison period starts. It always ends where the current time range starts. **Preset**: *Same as current period*, *1 month back*, *3 months back*, *6 months back* or *1 year back*. **Custom**: any number of years, months, weeks, days, hours, minutes and seconds. **Calendar**: an exact start date. | Preset, `Same as current period` |
 
-### Track Order and Colors
+### Track Colors
+
+Current tracks are always drawn on top of historic tracks where they overlap.
 
 | Field | Description | Default |
 |---|---|---|
-| Comparison Tracks Color *(required)* | Colour of the tracks from the comparison period. | `#a9a9a9` (grey) |
+| Historic Tracks Color *(required)* | Colour of the tracks from the historic period. | `#a9a9a9` (grey) |
 | Use subject colors for current tracks | Colour each subject's current tracks with its EarthRanger colour. Untick to use the Current Tracks Color for every subject. | ticked |
 | Current Tracks Color | Colour of the current tracks when **Use subject colors for current tracks** is unticked. | `#6495ed` (blue) |
-| Current tracks on top | Draw current tracks over comparison tracks where they overlap. Untick to draw comparison tracks on top. | ticked |
 
 ---
 
@@ -135,13 +140,14 @@ The run form is set in `spec.yaml`:
 - `rjsf-overrides` also titles and describes the **Comparison Period** step and defaults its length to the
   *Same as current period* preset: `previous_time_range.properties.offset.default` picks the Preset option,
   and `$defs: PresetPreviousPeriod.properties.preset.default` sets the preset inside it.
-- `rjsf-overrides` turns the **Track Order and Colors** fields into colour pickers (`format: color`) and a
-  checkbox, with their titles and defaults. The two steps are in one task group, so the keys are
-  `Track Order and Colors.properties.status_color_columns.properties.<field>` and
-  `Track Order and Colors.properties.sort_values_by_status.properties.ascending`.
-- Rows draw in order, so the label sorted last ends up on top: *Comparison Tracks* sorts before
-  *Current Tracks*, so `ascending: true` puts current tracks on top. That's also `sort_values`' own default
-  when a run leaves it out. `previous_color_hex` has no default, so `test-cases.yaml` sets it.
+- `rjsf-overrides` turns the **Track Colors** fields into two colour pickers (`format: color`) and a
+  checkbox, with their titles and defaults. The keys are `status_color_columns.properties.<field>`.
+  `previous_color_hex` has no default in the task, so `test-cases.yaml` sets it.
+- **Track Order** isn't on the form: `ascending: false` is fixed in the spec. Rows draw in order, so the
+  label sorted last ends up on top. *Current Tracks* sorts before *Historic Tracks*, so descending puts the
+  current rows last, on top. Don't drop `ascending` from the spec: `sort_values`' own default (`true`)
+  would put the historic tracks on top. If either label in the **Current/Previous Duration Status**
+  steps changes, check this still holds.
 - **Trajectory Segment Filter**, **BaseMap URLs** and **Comparison Period** have no fixed values in the spec,
   so they're on the form for each run.
 - Both periods are joined into tracks with the **Trajectory Segment Filter** settings
@@ -150,9 +156,36 @@ The run form is set in `spec.yaml`:
 ```bash
 # recompile spec.yaml (first time: --install; after that: --update, which bumps VERSION.yaml)
 ./dev/recompile.sh --update
-
-# run the test cases in test-cases.yaml
-pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --all
 ```
+
+### Testing
+
+`test-cases.yaml` has two kinds of case:
+
+| Case | Data | What it covers |
+|---|---|---|
+| `base` | mock IO | every field at its form default |
+| `single-current-color` | mock IO | one picked colour for all current tracks, a non-default historic colour, *3 months back* |
+| `sample-er` | Sample EarthRanger | Lions over two weeks, with the two weeks before as the historic period |
+| `sample-er-no-history` | Sample EarthRanger | a historic period before the Sample EarthRanger's data starts, so only current tracks are drawn |
+
+With mock IO the platform's packaged fixture stands in for both observation fetches (it ignores the
+time range), so the historic and current tracks are the same. The `sample-er` cases need the local
+Sample EarthRanger running on `http://127.0.0.1:8797` (EcoWorkbench → Connections → Sample EarthRanger →
+**Start**), with the connection passed as environment variables:
+
+```bash
+# mock-IO cases
+pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --case base --skip-setup
+
+# Sample EarthRanger cases
+env 'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__SERVER=http://127.0.0.1:8797' \
+    'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__USERNAME=demo' \
+    'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__PASSWORD=demo' \
+    pixi run --manifest-path pixi.toml -e default bash dev/pytest-cli.sh subject_historic_current_comparison --case sample-er --skip-setup
+```
+
+Results land in `/tmp/workflow-test-results/subject_historic_current_comparison/<case>/`. The thumbnail
+(`resources/thumbnail.png`) is a screenshot of one map from the `sample-er` run.
 
 Documentation: [docs/index.html](docs/index.html).
