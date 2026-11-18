@@ -86,23 +86,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    groupers = (
-        task(set_groupers)
-        .validate()
-        .set_task_instance_id("groupers")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(**(params.get("groupers") or {}))
-        .call()
-    )
-
     er_connection = (
         task(set_er_connection)
         .validate()
@@ -137,23 +120,6 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
         .call()
     )
 
-    segment_filter = (
-        task(trajectory_segment_filter)
-        .validate()
-        .set_task_instance_id("segment_filter")
-        .handle_errors()
-        .with_tracing()
-        .skipif(
-            conditions=[
-                any_is_empty_df,
-                any_dependency_skipped,
-            ],
-            unpack_depth=1,
-        )
-        .partial(**(params.get("segment_filter") or {}))
-        .call()
-    )
-
     subject_group_name = (
         task(set_string_var)
         .validate()
@@ -168,6 +134,40 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             unpack_depth=1,
         )
         .partial(**(params.get("subject_group_name") or {}))
+        .call()
+    )
+
+    groupers = (
+        task(set_groupers)
+        .validate()
+        .set_task_instance_id("groupers")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(**(params.get("groupers") or {}))
+        .call()
+    )
+
+    segment_filter = (
+        task(trajectory_segment_filter)
+        .validate()
+        .set_task_instance_id("segment_filter")
+        .handle_errors()
+        .with_tracing()
+        .skipif(
+            conditions=[
+                any_is_empty_df,
+                any_dependency_skipped,
+            ],
+            unpack_depth=1,
+        )
+        .partial(**(params.get("segment_filter") or {}))
         .call()
     )
 

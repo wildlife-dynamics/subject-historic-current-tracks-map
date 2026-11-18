@@ -20,45 +20,6 @@
       "description": "Add information that will help to differentiate this workflow from another.",
       "title": "Set Workflow Details"
     },
-    "groupers": {
-      "additionalProperties": false,
-      "properties": {
-        "groupers": {
-          "default": null,
-          "items": {
-            "anyOf": [
-              {
-                "type": "object",
-                "title": "Category",
-                "properties": {
-                  "index_name": {
-                    "title": "Category",
-                    "type": "string",
-                    "oneOf": [
-                      {
-                        "const": "subject_name",
-                        "title": "Subject Name"
-                      }
-                    ],
-                    "default": "subject_name"
-                  }
-                },
-                "required": [
-                  "index_name"
-                ]
-              }
-            ],
-            "title": "Group by"
-          },
-          "title": "Group by",
-          "type": "array",
-          "description": "Add a Subject Name entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map."
-        }
-      },
-      "type": "object",
-      "required": [],
-      "title": "Set Groupers"
-    },
     "er_connection": {
       "additionalProperties": false,
       "properties": {
@@ -106,6 +67,76 @@
       "type": "object",
       "description": "Choose the period of time to analyze.",
       "title": "Set Time Range"
+    },
+    "Subject Group": {
+      "type": "object",
+      "description": "Choose subject group to analyze",
+      "ecoscope:task_group": true,
+      "properties": {
+        "subject_group_name": {
+          "additionalProperties": false,
+          "properties": {
+            "var": {
+              "title": "Subject Group Name",
+              "type": "string",
+              "description": "The EarthRanger subject group to map, picked from the chosen data source's subject groups.",
+              "ecoscope:transform": [
+                {
+                  "transformer": "EarthRangerEnumResolver",
+                  "transformer_kws": {
+                    "type": "subject_group_name",
+                    "depends_on": "properties.er_connection.properties.data_source.properties.name"
+                  }
+                }
+              ]
+            }
+          },
+          "required": [
+            "var"
+          ],
+          "type": "object",
+          "title": ""
+        }
+      }
+    },
+    "groupers": {
+      "additionalProperties": false,
+      "properties": {
+        "groupers": {
+          "default": null,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "Category",
+                "properties": {
+                  "index_name": {
+                    "title": "Category",
+                    "type": "string",
+                    "oneOf": [
+                      {
+                        "const": "subject_name",
+                        "title": "Subject Name"
+                      }
+                    ],
+                    "default": "subject_name"
+                  }
+                },
+                "required": [
+                  "index_name"
+                ]
+              }
+            ],
+            "title": "Group by"
+          },
+          "title": "Group by",
+          "type": "array",
+          "description": "Add a Subject Name entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map."
+        }
+      },
+      "type": "object",
+      "required": [],
+      "title": "Set Groupers"
     },
     "segment_filter": {
       "additionalProperties": false,
@@ -156,37 +187,6 @@
       "type": "object",
       "required": [],
       "title": "Trajectory Segment Filter"
-    },
-    "Subject Group": {
-      "type": "object",
-      "description": "Choose subject group to analyze",
-      "ecoscope:task_group": true,
-      "properties": {
-        "subject_group_name": {
-          "additionalProperties": false,
-          "properties": {
-            "var": {
-              "title": "Subject Group Name",
-              "type": "string",
-              "description": "The EarthRanger subject group to map, picked from the chosen data source's subject groups.",
-              "ecoscope:transform": [
-                {
-                  "transformer": "EarthRangerEnumResolver",
-                  "transformer_kws": {
-                    "type": "subject_group_name",
-                    "depends_on": "properties.er_connection.properties.data_source.properties.name"
-                  }
-                }
-              ]
-            }
-          },
-          "required": [
-            "var"
-          ],
-          "type": "object",
-          "title": ""
-        }
-      }
     },
     "base_maps_pydeck": {
       "additionalProperties": false,
@@ -442,6 +442,47 @@
     }
   },
   "$defs": {
+    "EarthRangerConnection": {
+      "properties": {
+        "name": {
+          "title": "Data Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "EarthRangerConnection",
+      "type": "object"
+    },
+    "TimezoneInfo": {
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "tzCode": {
+          "title": "Tzcode",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "utc": {
+          "title": "Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "tzCode",
+        "name",
+        "utc"
+      ],
+      "title": "TimezoneInfo",
+      "type": "object"
+    },
     "SpatialGrouper": {
       "properties": {
         "spatial_index_name": {
@@ -513,47 +554,6 @@
         "index_name"
       ],
       "title": "Category",
-      "type": "object"
-    },
-    "EarthRangerConnection": {
-      "properties": {
-        "name": {
-          "title": "Data Source",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "EarthRangerConnection",
-      "type": "object"
-    },
-    "TimezoneInfo": {
-      "properties": {
-        "label": {
-          "title": "Label",
-          "type": "string"
-        },
-        "tzCode": {
-          "title": "Tzcode",
-          "type": "string"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "utc": {
-          "title": "Utc",
-          "type": "string"
-        }
-      },
-      "required": [
-        "label",
-        "tzCode",
-        "name",
-        "utc"
-      ],
-      "title": "TimezoneInfo",
       "type": "object"
     },
     "CalendarPreviousPeriod": {
@@ -675,11 +675,11 @@
     },
     "ui:order": [
       "workflow_details",
-      "groupers",
       "er_connection",
       "time_range",
-      "segment_filter",
       "Subject Group",
+      "groupers",
+      "segment_filter",
       "base_maps_pydeck",
       "previous_time_range",
       "status_color_columns"

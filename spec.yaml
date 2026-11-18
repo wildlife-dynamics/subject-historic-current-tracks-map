@@ -136,10 +136,6 @@ workflow:
   id: workflow_details
   task: set_workflow_details
 
-- name: Set Groupers
-  id: groupers
-  task: set_groupers
-
 - name: Connect to EarthRanger
   id: er_connection
   task: set_er_connection
@@ -150,10 +146,6 @@ workflow:
   partial:
     time_format: '%d %b %Y %H:%M:%S'
 
-- name: Trajectory Segment Filter
-  id: segment_filter
-  task: trajectory_segment_filter
-
 - title: Subject Group
   type: task-group
   description: Choose subject group to analyze 
@@ -161,6 +153,14 @@ workflow:
     - name: null
       id: subject_group_name
       task: set_string_var
+
+- name: Set Groupers
+  id: groupers
+  task: set_groupers
+
+- name: Trajectory Segment Filter
+  id: segment_filter
+  task: trajectory_segment_filter
 
 - name: Base Maps
   id: base_maps_pydeck

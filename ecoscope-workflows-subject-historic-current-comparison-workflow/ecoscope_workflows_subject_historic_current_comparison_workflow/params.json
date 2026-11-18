@@ -20,34 +20,6 @@
       "description": "Add information that will help to differentiate this workflow from another.",
       "title": "Set Workflow Details"
     },
-    "groupers": {
-      "additionalProperties": false,
-      "properties": {
-        "groupers": {
-          "default": null,
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/ValueGrouper"
-              },
-              {
-                "$ref": "#/$defs/TemporalGrouper"
-              },
-              {
-                "$ref": "#/$defs/SpatialGrouper"
-              }
-            ],
-            "title": "Group by"
-          },
-          "title": " ",
-          "type": "array",
-          "description": "            Specify how the data should be grouped to create the views for your dashboard.\n            This field is optional; if left blank, all the data will appear in a single view.\n            "
-        }
-      },
-      "type": "object",
-      "required": [],
-      "title": "Set Groupers"
-    },
     "er_connection": {
       "additionalProperties": false,
       "properties": {
@@ -95,6 +67,48 @@
       "type": "object",
       "description": "Choose the period of time to analyze.",
       "title": "Set Time Range"
+    },
+    "subject_group_name": {
+      "additionalProperties": false,
+      "properties": {
+        "var": {
+          "title": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "var"
+      ],
+      "type": "object",
+      "title": ""
+    },
+    "groupers": {
+      "additionalProperties": false,
+      "properties": {
+        "groupers": {
+          "default": null,
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ValueGrouper"
+              },
+              {
+                "$ref": "#/$defs/TemporalGrouper"
+              },
+              {
+                "$ref": "#/$defs/SpatialGrouper"
+              }
+            ],
+            "title": "Group by"
+          },
+          "title": " ",
+          "type": "array",
+          "description": "            Specify how the data should be grouped to create the views for your dashboard.\n            This field is optional; if left blank, all the data will appear in a single view.\n            "
+        }
+      },
+      "type": "object",
+      "required": [],
+      "title": "Set Groupers"
     },
     "segment_filter": {
       "additionalProperties": false,
@@ -145,20 +159,6 @@
       "type": "object",
       "required": [],
       "title": "Trajectory Segment Filter"
-    },
-    "subject_group_name": {
-      "additionalProperties": false,
-      "properties": {
-        "var": {
-          "title": "",
-          "type": "string"
-        }
-      },
-      "required": [
-        "var"
-      ],
-      "type": "object",
-      "title": ""
     },
     "base_maps_pydeck": {
       "additionalProperties": false,
@@ -411,6 +411,47 @@
     }
   },
   "$defs": {
+    "EarthRangerConnection": {
+      "properties": {
+        "name": {
+          "title": "Data Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "EarthRangerConnection",
+      "type": "object"
+    },
+    "TimezoneInfo": {
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "tzCode": {
+          "title": "Tzcode",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "utc": {
+          "title": "Utc",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label",
+        "tzCode",
+        "name",
+        "utc"
+      ],
+      "title": "TimezoneInfo",
+      "type": "object"
+    },
     "SpatialGrouper": {
       "properties": {
         "spatial_index_name": {
@@ -482,47 +523,6 @@
         "index_name"
       ],
       "title": "Category",
-      "type": "object"
-    },
-    "EarthRangerConnection": {
-      "properties": {
-        "name": {
-          "title": "Data Source",
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "title": "EarthRangerConnection",
-      "type": "object"
-    },
-    "TimezoneInfo": {
-      "properties": {
-        "label": {
-          "title": "Label",
-          "type": "string"
-        },
-        "tzCode": {
-          "title": "Tzcode",
-          "type": "string"
-        },
-        "name": {
-          "title": "Name",
-          "type": "string"
-        },
-        "utc": {
-          "title": "Utc",
-          "type": "string"
-        }
-      },
-      "required": [
-        "label",
-        "tzCode",
-        "name",
-        "utc"
-      ],
-      "title": "TimezoneInfo",
       "type": "object"
     },
     "CalendarPreviousPeriod": {
@@ -634,11 +634,11 @@
     },
     "ui:order": [
       "workflow_details",
-      "groupers",
       "er_connection",
       "time_range",
-      "segment_filter",
       "subject_group_name",
+      "groupers",
+      "segment_filter",
       "base_maps_pydeck",
       "previous_time_range",
       "status_color_columns"
