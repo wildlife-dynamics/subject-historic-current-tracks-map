@@ -36,6 +36,11 @@
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
       <tbody><tr><td>Workflow Name <em>(required)</em></td><td></td><td>—</td></tr><tr><td>Workflow Description</td><td></td><td>—</td></tr></tbody>
     </table>
+    <h3>Set Groupers</h3>
+    <table>
+      <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
+      <tbody><tr><td>Group by</td><td>Add a <strong>Category → Subject Name</strong> entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map. Subject Name is the only grouping offered.</td><td>empty (all subjects on one map)</td></tr></tbody>
+    </table>
     <h3>Connect to EarthRanger</h3>
     <table>
       <thead><tr><th>Field</th><th>Description</th><th>Default</th></tr></thead>
@@ -75,10 +80,10 @@
     </table>
 
     <h2>4. Run it and find the results</h2>
-    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes. The dashboard has one <strong>Movement Tracks</strong> map per subject. The current period is always drawn on top of the historic period; with the default <strong>Track Colors</strong>, current tracks are in the subject's EarthRanger colour and historic tracks in grey.</p>
+    <p>The workflow writes its files to the results folder the runner gives it (<code>ECOSCOPE_WORKFLOWS_RESULTS</code>), and shows its dashboard when it finishes. The dashboard has one <strong>Movement Tracks</strong> map with all subjects on it, or one map per subject (picked with the dashboard&#x27;s filter) when grouped by subject name. The current period is always drawn on top of the historic period; with the default <strong>Track Colors</strong>, current tracks are in the subject's EarthRanger colour and historic tracks in grey.</p>
     <figure>
       <img src="../resources/thumbnail.png" alt="One subject's Movement Tracks map: current tracks in the subject's colour over grey historic tracks, with a legend" style="width:100%;height:auto">
-      <figcaption>One lion&#x27;s map from a run against the Sample EarthRanger (made-up data).</figcaption>
+      <figcaption>One lion&#x27;s map from a run against the Sample EarthRanger (made-up data), grouped by subject name.</figcaption>
     </figure>
   </main>
 

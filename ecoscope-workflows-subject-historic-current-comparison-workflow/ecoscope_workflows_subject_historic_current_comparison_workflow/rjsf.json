@@ -20,6 +20,45 @@
       "description": "Add information that will help to differentiate this workflow from another.",
       "title": "Set Workflow Details"
     },
+    "groupers": {
+      "additionalProperties": false,
+      "properties": {
+        "groupers": {
+          "default": null,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "title": "Category",
+                "properties": {
+                  "index_name": {
+                    "title": "Category",
+                    "type": "string",
+                    "oneOf": [
+                      {
+                        "const": "subject_name",
+                        "title": "Subject Name"
+                      }
+                    ],
+                    "default": "subject_name"
+                  }
+                },
+                "required": [
+                  "index_name"
+                ]
+              }
+            ],
+            "title": "Group by"
+          },
+          "title": "Group by",
+          "type": "array",
+          "description": "Add a Subject Name entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map."
+        }
+      },
+      "type": "object",
+      "required": [],
+      "title": "Set Groupers"
+    },
     "er_connection": {
       "additionalProperties": false,
       "properties": {
@@ -403,6 +442,79 @@
     }
   },
   "$defs": {
+    "SpatialGrouper": {
+      "properties": {
+        "spatial_index_name": {
+          "title": "Spatial Regions",
+          "type": "string"
+        }
+      },
+      "required": [
+        "spatial_index_name"
+      ],
+      "title": "Spatial",
+      "type": "object"
+    },
+    "TemporalGrouper": {
+      "properties": {
+        "temporal_index": {
+          "oneOf": [
+            {
+              "const": "%Y",
+              "title": "Year (example: 2024)"
+            },
+            {
+              "const": "%B",
+              "title": "Month (example: September)"
+            },
+            {
+              "const": "%Y-%m",
+              "title": "Year and Month (example: 2023-01)"
+            },
+            {
+              "const": "%j",
+              "title": "Day of the year as a number (example: 365)"
+            },
+            {
+              "const": "%d",
+              "title": "Day of the month as a number (example: 31)"
+            },
+            {
+              "const": "%A",
+              "title": "Day of the week (example: Sunday)"
+            },
+            {
+              "const": "%H",
+              "title": "Hour (24-hour clock) as number (example: 22)"
+            },
+            {
+              "const": "%Y-%m-%d",
+              "title": "Date (example: 2025-01-31)"
+            }
+          ],
+          "title": "Time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "temporal_index"
+      ],
+      "title": "Time",
+      "type": "object"
+    },
+    "ValueGrouper": {
+      "properties": {
+        "index_name": {
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index_name"
+      ],
+      "title": "Category",
+      "type": "object"
+    },
     "EarthRangerConnection": {
       "properties": {
         "name": {
@@ -563,6 +675,7 @@
     },
     "ui:order": [
       "workflow_details",
+      "groupers",
       "er_connection",
       "time_range",
       "segment_filter",

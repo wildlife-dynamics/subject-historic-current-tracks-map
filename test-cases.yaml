@@ -17,13 +17,16 @@ base:
   name: Form defaults
   description: >-
     Every field at its form default (subject colours for current tracks, grey historic
-    tracks, comparison period the same length as the current one), on the packaged
-    subject-group fixture. Covers both fetches, the concatenate/sort/colour steps and one map per subject.
+    tracks, comparison period the same length as the current one, no grouping) on the
+    packaged subject-group fixture. Covers both fetches, the concatenate/sort/colour
+    steps and the single "All" map.
   mock_io: true
   params:
     workflow_details:
       name: Historic and Current Tracks - defaults
       description: Mock IO, form defaults
+    groupers:
+      groupers: []
     er_connection:
       data_source:
         name: Sample EarthRanger
@@ -49,13 +52,16 @@ single-current-color:
   name: One colour for current tracks
   description: >-
     "Use subject colors for current tracks" unticked, so every subject's current tracks
-    use the picked Current Tracks Color; non-default historic colour and the
-    "3 months back" comparison period.
+    use the picked Current Tracks Color; non-default historic colour, the
+    "3 months back" comparison period, and grouped by subject name (one map per subject).
   mock_io: true
   params:
     workflow_details:
       name: Historic and Current Tracks - single colour
       description: Mock IO, one current colour, 3 months back
+    groupers:
+      groupers:
+      - index_name: subject_name
     er_connection:
       data_source:
         name: Sample EarthRanger
@@ -86,12 +92,14 @@ sample-er:
   description: >-
     Live run against the local Sample EarthRanger (Africa scenario): the Lions group over
     two weeks, with the two weeks before as the historic period, so the two periods have
-    different tracks.
+    different tracks. Form defaults, so all five lions are on one map.
   mock_io: false
   params:
     workflow_details:
       name: Historic and Current Tracks - Sample EarthRanger
       description: Lions, Sample EarthRanger
+    groupers:
+      groupers: []
     er_connection:
       data_source:
         name: Sample EarthRanger
@@ -117,13 +125,16 @@ sample-er-no-history:
   name: Sample EarthRanger, no historic tracks
   description: >-
     The current period starts the day the Sample EarthRanger's data starts (2024-01-01),
-    so the historic fetch comes back empty. The map should still draw, with current
-    tracks only.
+    so the historic fetch comes back empty. Grouped by subject name; each map should
+    still draw, with current tracks only.
   mock_io: false
   params:
     workflow_details:
       name: Historic and Current Tracks - no history
       description: Giraffes, empty historic period
+    groupers:
+      groupers:
+      - index_name: subject_name
     er_connection:
       data_source:
         name: Sample EarthRanger

@@ -99,9 +99,7 @@ def main(params: dict[str, Any], validate_params_schema: bool = True):
             ],
             unpack_depth=1,
         )
-        .partial(
-            groupers=[{"index_name": "subject_name"}], **(params.get("groupers") or {})
-        )
+        .partial(**(params.get("groupers") or {}))
         .call()
     )
 

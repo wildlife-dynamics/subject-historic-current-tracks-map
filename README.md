@@ -1,17 +1,17 @@
 # subject-historic-current-comparison
 
-Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a historic period just before it. Current tracks are always drawn on top of historic tracks. By default they're in the subject's EarthRanger colour and the historic tracks are grey; both colours can be changed on the form. There is one map per subject.
+Maps each subject in an EarthRanger subject group with its tracks from the chosen time range on top of its tracks from a historic period just before it. Current tracks are always drawn on top of historic tracks. By default they're in the subject's EarthRanger colour and the historic tracks are grey; both colours can be changed on the form. By default all subjects share one map; group by subject name to get one map per subject.
 
 ![Historic and current tracks map (Sample EarthRanger data)](resources/thumbnail.png)
 
-*One lion's map from a run against the Sample EarthRanger (made-up data): the current two weeks in the subject's colour over the two weeks before in grey.*
+*One lion's map from a run against the Sample EarthRanger (made-up data), grouped by subject name: the current two weeks in the subject's colour over the two weeks before in grey.*
 
 ## What it does
 
 | Step | What it does |
 |---|---|
 | **Set Workflow Details** | Add information that will help to differentiate this workflow from another. |
-| **Set Groupers** | Splits the results by subject, so the dashboard has one map per subject. |
+| **Set Groupers** | Shows all subjects on one map by default, or one map per subject when **Group by** has a Subject Name entry. |
 | **Connect to EarthRanger** | The EarthRanger site to read from. |
 | **Set Time Range** | Choose the period of time to analyze. |
 | **Trajectory Segment Filter** | Build a TrajectorySegmentFilter with the project's default thresholds. |
@@ -34,7 +34,7 @@ Maps each subject in an EarthRanger subject group with its tracks from the chose
 | **Previous Duration Status** | Create a new column in the DataFrame with a default value if it doesn't already exist. |
 | **Concatenate Current and Previous Dataframes** | Merge multiple dataframes into a single dataframe. |
 | **Add Temporal Index** | Indexes the tracks by segment start time. |
-| **Split Groups** | One table of tracks per subject. |
+| **Split Groups** | One table of tracks per map: all subjects together, or one per subject. |
 | **Track Colors** | Colours the tracks: historic tracks in the Historic Tracks Color; current tracks in each subject's EarthRanger colour, or in the Current Tracks Color if that's turned off. |
 | **Track Order** | Orders the rows so current tracks are always drawn on top of historic tracks. Not on the form. |
 | **Subset Columns** | Return a DataFrame restricted to a subset of columns. |
@@ -70,6 +70,12 @@ You'll be prompted to fill in the following parameters before running.
 |---|---|---|
 | Workflow Name *(required)* |  | — |
 | Workflow Description |  | — |
+
+### Set Groupers
+
+| Field | Description | Default |
+|---|---|---|
+| Group by | Add a **Category → Subject Name** entry to split the dashboard into one map per subject. Leave it empty to show all subjects on a single map. Subject Name is the only grouping offered. | empty (all subjects on one map) |
 
 ### Connect to EarthRanger
 
@@ -132,6 +138,10 @@ Current tracks are always drawn on top of historic tracks where they overlap.
 
 The run form is set in `spec.yaml`:
 
+- **Set Groupers** is on the form, limited to the default *All* (an empty list) or **Category → Subject
+  Name**: `groupers.properties.groupers.items.anyOf` offers a single Category option whose `index_name` is
+  `subject_name`. Grouping by subject splits **Split Groups** and every step after it into one map per
+  subject; without it there's one map for the whole group.
 - `rjsf-overrides` turns the **Subject Group** field (*Var*) into a *Subject Group Name* drop-down: the
   `EarthRangerEnumResolver` transform fills it with the subject groups of the data source picked under
   **Connect to EarthRanger** (`depends_on: properties.er_connection.properties.data_source.properties.name`).
@@ -164,10 +174,10 @@ The run form is set in `spec.yaml`:
 
 | Case | Data | What it covers |
 |---|---|---|
-| `base` | mock IO | every field at its form default |
-| `single-current-color` | mock IO | one picked colour for all current tracks, a non-default historic colour, *3 months back* |
-| `sample-er` | Sample EarthRanger | Lions over two weeks, with the two weeks before as the historic period |
-| `sample-er-no-history` | Sample EarthRanger | a historic period before the Sample EarthRanger's data starts, so only current tracks are drawn |
+| `base` | mock IO | every field at its form default, so one map for all subjects |
+| `single-current-color` | mock IO | one picked colour for all current tracks, a non-default historic colour, *3 months back*, grouped by subject name |
+| `sample-er` | Sample EarthRanger | Lions over two weeks, with the two weeks before as the historic period, all five on one map |
+| `sample-er-no-history` | Sample EarthRanger | a historic period before the Sample EarthRanger's data starts, so only current tracks are drawn; grouped by subject name |
 
 With mock IO the platform's packaged fixture stands in for both observation fetches (it ignores the
 time range), so the historic and current tracks are the same. The `sample-er` cases need the local
@@ -186,6 +196,7 @@ env 'ECOSCOPE_WORKFLOWS__CONNECTIONS__EARTHRANGER__SAMPLE EARTHRANGER__SERVER=ht
 ```
 
 Results land in `/tmp/workflow-test-results/subject_historic_current_comparison/<case>/`. The thumbnail
-(`resources/thumbnail.png`) is a screenshot of one map from the `sample-er` run.
+(`resources/thumbnail.png`) is one lion's map from a `sample-er` run grouped by subject name (the
+Sample EarthRanger's lions are at two sites far apart, so the all-subjects map is too zoomed out to read).
 
 Documentation: [docs/index.html](docs/index.html).

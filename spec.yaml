@@ -6,7 +6,7 @@ metadata:
     Maps each subject in an EarthRanger subject group with its tracks from the chosen time
     range drawn on top of its tracks from a historic period just before it. Current tracks
     are drawn in the subject's EarthRanger colour (or one picked colour) and historic tracks
-    in grey, with one interactive map per subject.
+    in grey, on one interactive map for the whole group or one map per subject.
   maintainers:
     - name: Tevin Temu
       email: tevin@wildlifedynamics.com
@@ -15,8 +15,8 @@ metadata:
     - name: Movement Tracks Dashboard
       type: dashboard
       description: >-
-        A Movement Tracks map widget with one view per subject, switched with the
-        dashboard's subject filter.
+        A Movement Tracks map widget: one view for the whole subject group by default,
+        or one view per subject (switched with the dashboard's filter) when grouped by subject name.
       indicators:
         - name: Subject movement
     - name: Historic and Current Tracks Map
@@ -58,6 +58,25 @@ requirements:
 
 rjsf-overrides:
   properties:
+    # Groupers: only "All" (leave the list empty, the default) or Category → Subject Name.
+    groupers.properties.groupers.title: Group by
+    groupers.properties.groupers.description: >-
+      Add a Subject Name entry to split the dashboard into one map per subject.
+      Leave it empty to show all subjects on a single map.
+    groupers.properties.groupers.items.anyOf:
+    - type: object
+      title: Category
+      properties:
+        index_name:
+          title: Category
+          type: string
+          oneOf:
+          - const: subject_name
+            title: Subject Name
+          default: subject_name
+      required:
+      - index_name
+
     # Subject Group: a drop-down of the chosen EarthRanger site's subject group names
     Subject Group.properties.subject_group_name.properties.var:
       title: Subject Group Name
@@ -120,9 +139,6 @@ workflow:
 - name: Set Groupers
   id: groupers
   task: set_groupers
-  partial:
-    groupers:
-    - index_name: subject_name
 
 - name: Connect to EarthRanger
   id: er_connection
